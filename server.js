@@ -204,7 +204,7 @@ app.post('/api/assessment', async (req, res) => {
         if (!user) {
             user = new User({
                 fullName: formData.fullName,
-                phoneNumber: formData.phone,
+                phone: formData.phone,
                 password: 'placeholder_password'
             });
             await user.save();
