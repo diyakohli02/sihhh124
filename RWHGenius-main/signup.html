@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign Up – RWHGenius</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, rgba(21, 41, 46, 0.85) 0%, rgba(7, 64, 71, 0.85) 50%, rgba(28, 133, 133, 0.85) 100%),
+                        url('./loginwali.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(28, 133, 133, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(7, 64, 71, 0.3) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+        }
+        .logo-space {
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .card-container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(28, 133, 133, 0.1);
+        }
+        .input-field:focus {
+            border-color: #1C8585;
+            box-shadow: 0 0 0 3px rgba(28, 133, 133, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1C8585 0%, #1DA27E 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #074047 0%, #1C8585 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(28, 133, 133, 0.3);
+        }
+        .link-accent {
+            color: #1DA27E;
+            transition: color 0.3s ease;
+        }
+        .link-accent:hover {
+            color: #1C8585;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-8 card-container rounded-xl shadow-2xl relative z-10">
+        <!-- Logo and Title Space -->
+        <div class="logo-space">
+            <img src="./rainwater-harvesting-icon-sustainability-isolated-on-white-background-from-blue-icon-set-vector.jpg" alt="Logo" class="h-16"> 
+            <h1 class="text-3xl font-bold" style="color: #074047;">RWHGenius</h1>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-center mb-6" style="color: #15292E;">Sign Up</h2>
+        
+        <form class="space-y-5">
+            <div>
+                <label for="name" class="block text-sm font-medium mb-1" style="color: #074047;">Name</label>
+                <input type="text" id="name" name="name" required class="input-field w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition-all" placeholder="Your Name" style="color: #15292E;">
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium mb-1" style="color: #074047;">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}" maxlength="10" class="input-field w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition-all" placeholder="10-digit Phone Number" style="color: #15292E;">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium mb-1" style="color: #074047;">Password</label>
+                <input type="password" id="password" name="password" required minlength="6" class="input-field w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition-all" placeholder="Set Password" style="color: #15292E;">
+            </div>
+            <div>
+                <label for="confirm-password" class="block text-sm font-medium mb-1" style="color: #074047;">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required minlength="6" class="input-field w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition-all" placeholder="Re-enter Password" style="color: #15292E;">
+            </div>
+            <button type="submit" class="btn-primary w-full py-2 px-4 text-white font-semibold rounded-lg">Sign Up</button>
+        </form>
+        
+        <p class="mt-4 text-center text-sm" style="color: #074047;">Already have an account? <a href="login.html" class="link-accent font-medium hover:underline">Login</a></p>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const lang = localStorage.getItem('preferredLanguage') || 'en';
+        const translations = {
+            en: {
+                title: "Create Your Account",
+                name: "Full Name",
+                email: "Email Address",
+                password: "Password",
+                submit: "Sign Up",
+                login: "Already have an account? Login"
+            },
+            hi: {
+                title: "अपना खाता बनाएं",
+                name: "पूरा नाम",
+                email: "ईमेल पता",
+                password: "पासवर्ड",
+                submit: "साइन अप करें",
+                login: "पहले से खाता है? लॉग इन करें"
+            }
+        };
+
+        // Update text content
+        document.querySelector('h2').textContent = translations[lang].title;
+        document.querySelector('label[for="name"]').textContent = translations[lang].name;
+        document.querySelector('label[for="email"]').textContent = translations[lang].email;
+        document.querySelector('label[for="password"]').textContent = translations[lang].password;
+        document.querySelector('button[type="submit"]').textContent = translations[lang].submit;
+        document.querySelector('.login-link').textContent = translations[lang].login;
+    });
+    </script>
+</body>
+</html>

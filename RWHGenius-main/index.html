@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>RWHGenius – Advanced RTRWH Assessment Portal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F2D37',      
+                        secondary: '#1A5463',    
+                        accent: '#7CAD3E',       
+                        neutralDark: '#2E3A42',  
+                        neutralLight: '#F5F7F8', 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                        devanagari: ['Noto Sans Devanagari', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'float': 'float 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-10px)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #F5F7F8; }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .assessment-card { background: linear-gradient(145deg, rgba(124, 173, 62, 0.05), rgba(35, 100, 119, 0.05)); border: 1px solid rgba(124, 173, 62, 0.2); }
+        .error-message { display: none; color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
+        .success-message { 
+            display: none; 
+            color: #059669; 
+            font-size: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 0.5rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .success-message.show {
+            display: block;
+            opacity: 1;
+        }
+        
+        .success-message button {
+            margin-top: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        [lang="hi"], [lang="hi"] * {
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+        }
+        
+        [lang="hi"] .font-heading {
+            font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-neutralLight">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+                            <img src="./rainwater-harvesting-icon-sustainability-isolated-on-white-background-from-blue-icon-set-vector.jpg" alt="RWHGenius Logo" class="w-10 h-10 object-contain">
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-heading font-bold text-primary">RWHGenius</h1>
+                        <p class="text-sm text-gray-600" data-translate-key="header.subtitle">Advanced RTRWH Assessment Portal</p>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-primary font-medium transition-colors" data-translate-key="nav.home">Home</a>
+                    <a href="#assessment" class="text-gray-700 hover:text-primary font-medium transition-colors" data-translate-key="nav.assessment">Assessment</a>
+                    <a href="#features" class="text-gray-700 hover:text-primary font-medium transition-colors" data-translate-key="nav.features">Features</a>
+                    <a href="#schemes" class="text-gray-700 hover:text-primary font-medium transition-colors" data-translate-key="nav.schemes">Schemes</a>
+                    <div class="relative">
+                        <select id="language-selector" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            <option value="en">English</option>
+                            <option value="hi">हिन्दी</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                        </div>
+                    </div>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-primary focus:outline-none focus:text-primary">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-primary font-medium" data-translate-key="nav.home">Home</a>
+                <a href="#assessment" class="block px-3 py-2 text-gray-700 hover:text-primary font-medium" data-translate-key="nav.assessment">Assessment</a>
+                <a href="#features" class="block px-3 py-2 text-gray-700 hover:text-primary font-medium" data-translate-key="nav.features">Features</a>
+                <a href="#schemes" class="block px-3 py-2 text-gray-700 hover:text-primary font-medium" data-translate-key="nav.schemes">Schemes</a>
+                <div class="px-3 py-2">
+                    <select id="mobile-language-selector" class="w-full bg-gray-50 border border-gray-300 rounded px-3 py-2">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                        <option value="bn">বাংলা</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="text-white py-20 lg:py-28 relative">
+        <div class="absolute inset-0 z-0">
+            <img src="./rain-water-harvesting-image.webp" alt="Hero Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/80"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-4xl lg:text-6xl font-heading font-bold leading-tight mb-6" data-translate-key="hero.title">Harvest Your Water Future. Sustain India's.</h1>
+                    <p class="text-xl lg:text-2xl text-gray-200 mb-8 leading-relaxed" data-translate-key="hero.subtitle">Our state-of-the-art portal uses GIS-powered data to provide a precise, personalized assessment for your rooftop rainwater harvesting project. Discover your potential for water security and savings.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#assessment" class="bg-accent hover:bg-accent/90 text-white font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg" data-translate-key="hero.cta.start">Start Assessment</a>
+                        <a href="#features" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-300" data-translate-key="hero.cta.learn">Learn More</a>
+                    </div>
+                </div>
+                <div class="relative animate-slide-up">
+                    <div class="floating">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                            <h3 class="text-2xl font-heading font-bold mb-4" data-translate-key="hero.stats.title">Quick Impact Statistics</h3>
+                            <div class="space-y-4 text-gray-200">
+                                <div class="flex items-center justify-between"><span data-translate-key="hero.stats.water_savings">Potential Water Savings:</span><span class="text-accent font-bold text-xl">40-60%</span></div>
+                                <div class="flex items-center justify-between"><span data-translate-key="hero.stats.recharge_potential">Recharge Potential:</span><span class="text-accent font-bold text-xl">↑ 25-35%</span></div>
+                                <div class="flex items-center justify-between"><span data-translate-key="hero.stats.water_security">Water Security:</span><span class="text-accent font-bold text-xl">↑ 40%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-neutralLight">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-heading font-bold text-primary mb-4" data-translate-key="benefits.title">Why Choose Rainwater Harvesting?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-translate-key="benefits.subtitle">Turn your property into a sustainable water asset while contributing to national conservation efforts.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass-effect rounded-2xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent to-darkGreen rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-3" data-translate-key="benefits.conservation.title">Water Conservation</h3>
+                    <p class="text-gray-600" data-translate-key="benefits.conservation.description">Maximize rainwater utilization through efficient harvesting techniques and scientific storage methods.</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-3" data-translate-key="benefits.ecological.title">Ecological Impact</h3>
+                    <p class="text-gray-600" data-translate-key="benefits.ecological.description">Help mitigate urban flooding, recharge local aquifers, and significantly reduce your environmental footprint.</p>
+                </div>
+                <div class="glass-effect rounded-2xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-lightBlue to-secondary rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-3" data-translate-key="benefits.security.title">Enhanced Water Security</h3>
+                    <p class="text-gray-600" data-translate-key="benefits.security.description">Gain independence from municipal supplies and borewells by creating a reliable, year-round water source for your property.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assessment" class="py-20 bg-gradient-to-br from-neutralLight to-lightBlue/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-heading font-bold text-primary mb-4" data-translate-key="form.title">Your Custom Water Conservation Plan</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-translate-key="form.subtitle">Answer a few key questions to unlock a detailed, data-driven assessment. Our algorithm analyzes your property against local rainfall, soil, and hydrogeological data to provide a comprehensive roadmap for success.</p>
+            </div>
+            <div class="assessment-card rounded-3xl p-8 lg:p-12 max-w-4xl mx-auto relative" style="background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('design-install-rainwater-harvesting-systems-to-capture-store-later-use-irrigation-304752836.webp') center/cover no-repeat;">
+                <form id="assessment-form" class="space-y-8" novalidate>
+                    <div class="bg-white/95 backdrop-blur-lg rounded-2xl p-6 border border-gray-200">
+                        <h3 class="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-primary rounded-full text-white flex items-center justify-center text-sm font-bold mr-3">1</span>
+                            <span data-translate-key="form.sections.personal">Personal Information</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.fullName.label">Full Name *</label>
+                                <input type="text" name="fullName" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-translate-key="form.fields.fullName.placeholder" placeholder="Enter your full name">
+                                <div class="error-message" id="fullName-error" data-translate-key="form.fields.fullName.error">This field is required.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.phone.label">Phone Number *</label>
+                                <input type="tel" name="phone" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-translate-key="form.fields.phone.placeholder" placeholder="Enter 10-digit mobile number">
+                                <div class="error-message" id="phone-error" data-translate-key="form.fields.phone.error">Please enter a valid 10-digit phone number.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.location.label">Location (City/District) *</label>
+                                <div class="relative">
+                                    <input type="text" name="location" id="location-input" required 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" 
+                                        data-translate-key="form.fields.location.placeholder" placeholder="Enter your city or district">
+                                    <button type="button" id="detect-location" 
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-accent hover:bg-accent/90 text-white px-3 py-1 rounded-md text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        <span data-translate-key="form.fields.location.detect">Detect</span>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1" data-translate-key="form.fields.location.help">Used for rainfall data and local regulations.</p>
+                                <div class="error-message" id="location-error" data-translate-key="form.fields.location.error">This field is required.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                        <h3 class="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-primary rounded-full text-white flex items-center justify-center text-sm font-bold mr-3">2</span>
+                            <span data-translate-key="form.sections.property">Property Details</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.roofArea.label">Total Roof Area (sq.m) *</label>
+                                <input type="number" name="roofArea" required min="1" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="e.g., 150.5">
+                                <p class="text-sm text-gray-500 mt-1" data-translate-key="form.fields.roofArea.help">Measure the total catchment area.</p>
+                                <div class="error-message" id="roofArea-error" data-translate-key="form.fields.roofArea.error">Please enter a valid roof area.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.roofType.label">Roof Type *</label>
+                                <select name="roofType" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option value="" data-translate-key="form.fields.roofType.placeholder">Select roof type</option>
+                                    <option value="rcc" data-translate-key="form.fields.roofType.options.rcc">RCC (Reinforced Concrete)</option>
+                                    <option value="metal" data-translate-key="form.fields.roofType.options.metal">Metal Sheet</option>
+                                    <option value="tile" data-translate-key="form.fields.roofType.options.tile">Clay/Concrete Tiles</option>
+                                    <option value="asbestos" data-translate-key="form.fields.roofType.options.asbestos">Asbestos Sheet</option>
+                                    <option value="other" data-translate-key="form.fields.roofType.options.other">Other</option>
+                                </select>
+                                <div class="error-message" id="roofType-error" data-translate-key="form.fields.roofType.error">This field is required.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.buildingType.label">Building Type</label>
+                                <select name="buildingType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option value="" data-translate-key="form.fields.buildingType.placeholder">Select building type</option>
+                                    <option value="residential" data-translate-key="form.fields.buildingType.options.residential">Residential</option>
+                                    <option value="commercial" data-translate-key="form.fields.buildingType.options.commercial">Commercial</option>
+                                    <option value="institutional" data-translate-key="form.fields.buildingType.options.institutional">Institutional</option>
+                                    <option value="industrial" data-translate-key="form.fields.buildingType.options.industrial">Industrial</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.occupants.label">Number of Occupants</label>
+                                <input type="number" name="occupants" min="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-translate-key="form.fields.occupants.placeholder" placeholder="e.g., 4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                        <h3 class="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-primary rounded-full text-white flex items-center justify-center text-sm font-bold mr-3">3</span>
+                            <span data-translate-key="form.sections.site">Site Specifications</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.openSpace.label">Available Open Space (sq.m) *</label>
+                                <input type="number" name="openSpace" required min="0" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-translate-key="form.fields.openSpace.placeholder" placeholder="e.g., 25.0">
+                                <p class="text-sm text-gray-500 mt-1" data-translate-key="form.fields.openSpace.help">For storage tanks or recharge structures.</p>
+                                <div class="error-message" id="openSpace-error" data-translate-key="form.fields.openSpace.error">Please enter a valid number.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.existingWell.label">Existing Bore/Open Well *</label>
+                                <select name="existingWell" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option value="" data-translate-key="form.fields.existingWell.placeholder">Select option</option>
+                                    <option value="none" data-translate-key="form.fields.existingWell.options.none">No existing well</option>
+                                    <option value="borewell" data-translate-key="form.fields.existingWell.options.borewell">Borewell</option>
+                                    <option value="openwell" data-translate-key="form.fields.existingWell.options.openwell">Open Well</option>
+                                    <option value="both" data-translate-key="form.fields.existingWell.options.both">Both</option>
+                                </select>
+                                <div class="error-message" id="existingWell-error" data-translate-key="form.fields.existingWell.error">Please select an option.</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.soilType.label">Soil Type</label>
+                                <select name="soilType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                                    <option value="" data-translate-key="form.fields.soilType.placeholder">Select if known</option>
+                                    <option value="clay" data-translate-key="form.fields.soilType.options.clay">Clay</option>
+                                    <option value="sandy" data-translate-key="form.fields.soilType.options.sandy">Sandy</option>
+                                    <option value="loamy" data-translate-key="form.fields.soilType.options.loamy">Loamy</option>
+                                    <option value="rocky" data-translate-key="form.fields.soilType.options.rocky">Rocky</option>
+                                    <option value="unknown" data-translate-key="form.fields.soilType.options.unknown">Not Sure</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2" data-translate-key="form.fields.waterUsage.label">Daily Water Usage (Liters)</label>
+                                <input type="number" name="waterUsage" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all" data-translate-key="form.fields.waterUsage.placeholder" placeholder="e.g., 600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                        <h3 class="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-primary rounded-full text-white flex items-center justify-center text-sm font-bold mr-3">4</span>
+                            <span data-translate-key="form.sections.preferences">Assessment Preferences</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-3" data-translate-key="form.fields.purpose.label">Primary Purpose *</label>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                        <input type="radio" name="purpose" value="storage" required class="mr-3 text-primary">
+                                        <span data-translate-key="form.fields.purpose.options.storage">Water Storage & Usage</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                        <input type="radio" name="purpose" value="recharge" required class="mr-3 text-primary">
+                                        <span data-translate-key="form.fields.purpose.options.recharge">Groundwater Recharge</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                        <input type="radio" name="purpose" value="both" required class="mr-3 text-primary">
+                                        <span data-translate-key="form.fields.purpose.options.both">Both Storage & Recharge</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                        <input type="radio" name="purpose" value="consultation" required class="mr-3 text-primary">
+                                        <span data-translate-key="form.fields.purpose.options.consultation">Consultation Only</span>
+                                    </label>
+                                </div>
+                                <div class="error-message" id="purpose-error" data-translate-key="form.fields.purpose.error">This field is required.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center pt-8">
+                        <button type="submit" class="inline-block bg-accent hover:bg-accent/90 text-white font-bold px-12 py-4 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+                            Generate Comprehensive Assessment Report
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 bg-neutralLight">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-heading font-bold text-primary mb-4" data-translate-key="features.title">Precision Powered by Data</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-translate-key="features.subtitle">We go beyond simple calculations. Our platform is built on cutting-edge technology to give you a definitive guide for your project's success.</p>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-4" data-translate-key="features.gis.title">GIS Integration</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.gis.point1">Hyper-local rainfall and hydrogeological data for pinpoint accuracy.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.gis.point2">Soil type and permeability mapping.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.gis.point3">Groundwater level data integration.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.gis.point4">Principal aquifer identification.</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent to-darkGreen rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-4" data-translate-key="features.technical.title">Technical Design</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.technical.point1">Runoff coefficient calculations.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.technical.point2">Optimal storage tank sizing recommendations.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.technical.point3">Recharge pit/trench dimensions.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.technical.point4">Filtration system recommendations.</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-primary mb-4" data-translate-key="features.financial.title">Financial Planning</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.financial.point1">Detailed cost breakdown for your project.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.financial.point2">ROI and payback period analysis.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.financial.point3">Information on government subsidies and incentives.</span></li>
+                        <li class="flex items-start"><span class="text-accent mr-2">•</span><span data-translate-key="features.financial.point4">Annual maintenance estimates.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="schemes" class="py-20 bg-gradient-to-br from-lightBlue/30 to-neutralLight">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-heading font-bold text-primary mb-4" data-translate-key="schemes.title">Government Schemes & Incentives</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-translate-key="schemes.subtitle">Access financial support and incentives for your RTRWH project.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-accent to-darkGreen rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-heading font-bold text-primary" data-translate-key="schemes.national.title">National Schemes</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-accent pl-4">
+                            <h4 class="font-bold text-primary mb-2" data-translate-key="schemes.national.jal_shakti.title">Jal Shakti Abhiyan: Catch The Rain</h4>
+                            <p class="text-gray-600 mb-2" data-translate-key="schemes.national.jal_shakti.description">National campaign promoting water conservation and rainwater harvesting across all districts.</p>
+                            <div class="text-sm text-accent font-medium" data-translate-key="schemes.national.jal_shakti.coverage">Coverage: Pan-India</div>
+                        </div>
+                        <div class="border-l-4 border-secondary pl-4">
+                            <h4 class="font-bold text-primary mb-2" data-translate-key="schemes.national.atal_bhujal.title">Atal Bhujal Yojana</h4>
+                            <p class="text-gray-600 mb-2" data-translate-key="schemes.national.atal_bhujal.description">Sustainable groundwater management with a focus on community participation in water-stressed areas.</p>
+                            <div class="text-sm text-secondary font-medium" data-translate-key="schemes.national.atal_bhujal.states">States: Gujarat, Haryana, Karnataka, Madhya Pradesh, Maharashtra, Rajasthan, Uttar Pradesh</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-heading font-bold text-primary" data-translate-key="schemes.state.title">State-Specific Programs</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-accent pl-4">
+                            <h4 class="font-bold text-primary mb-2" data-translate-key="schemes.state.chhata.title">CHHATA (Odisha)</h4>
+                            <p class="text-gray-600 mb-2" data-translate-key="schemes.state.chhata.description">Community Harnessing and Harvesting Rainwater Artificially from Terrace to Aquifer.</p>
+                            <div class="text-sm text-accent font-medium" data-translate-key="schemes.state.chhata.subsidy">Subsidy: Up to 50% (₹55,000 max)</div>
+                        </div>
+                        <div class="border-l-4 border-secondary pl-4">
+                            <h4 class="font-bold text-primary mb-2" data-translate-key="schemes.state.rajasthan.title">Mukhyamantri Jal Swavalamban Abhiyan (Rajasthan)</h4>
+                            <p class="text-gray-600 mb-2" data-translate-key="schemes.state.rajasthan.description">A comprehensive water conservation program with RWH components across all districts.</p>
+                            <div class="text-sm text-secondary font-medium" data-translate-key="schemes.state.rajasthan.coverage">Coverage: All districts of Rajasthan</div>
+                        </div>
+                        <div class="border-l-4 border-darkGreen pl-4">
+                            <h4 class="font-bold text-primary mb-2" data-translate-key="schemes.state.maharashtra.title">Jalyukta Shivar (Maharashtra)</h4>
+                            <p class="text-gray-600 mb-2" data-translate-key="schemes.state.maharashtra.description">Village-level water conservation with individual RWH support to make villages drought-free.</p>
+                            <div class="text-sm text-darkGreen font-medium" data-translate-key="schemes.state.maharashtra.target">Target: Make villages drought-free</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-8 border border-gray-200">
+                <h3 class="text-2xl font-heading font-bold text-primary mb-6 text-center" data-translate-key="schemes.incentives.title">Financial Incentives & Benefits</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="text-center p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl">
+                        <div class="text-3xl font-bold text-accent mb-2">50%</div>
+                        <div class="text-sm text-gray-600" data-translate-key="schemes.incentives.avg_subsidy">Average Subsidy Amount</div>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
+                        <div class="text-3xl font-bold text-primary mb-2">10-20%</div>
+                        <div class="text-sm text-gray-600" data-translate-key="schemes.incentives.tax_reduction">Property Tax Reduction</div>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 rounded-xl">
+                        <div class="text-3xl font-bold text-secondary mb-2">₹2-5L</div>
+                        <div class="text-sm text-gray-600" data-translate-key="schemes.incentives.max_subsidy">Maximum Subsidy Limit</div>
+                    </div>
+                    <div class="text-center p-4 bg-gradient-to-br from-darkGreen/10 to-darkGreen/5 rounded-xl">
+                        <div class="text-3xl font-bold text-darkGreen mb-2" data-translate-key="schemes.incentives.payback_years">3-5</div>
+                        <div class="text-sm text-gray-600" data-translate-key="schemes.incentives.payback_period">Years Payback Period</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-primary text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-12 h-12 rounded-lg flex items-center justify-center">
+                            <img src="./rainwater-harvesting-icon-sustainability-isolated-on-white-background-from-blue-icon-set-vector.jpg" alt="RWHGenius Logo" class="w-12 h-12 object-contain">
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold">RWHGenius</h3>
+                            <p class="text-gray-300" data-translate-key="footer.subtitle">A Government of India Initiative</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6 max-w-lg" data-translate-key="footer.description">Empowering communities with data-driven insights for sustainable rainwater harvesting and groundwater conservation across India. We are committed to a water-resilient future.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-heading font-bold mb-4" data-translate-key="footer.quick_links.title">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#home" class="hover:text-white transition-colors" data-translate-key="nav.home">Home</a></li>
+                        <li><a href="#assessment" class="hover:text-white transition-colors" data-translate-key="nav.assessment">Assessment</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors" data-translate-key="nav.features">Features</a></li>
+                        <li><a href="#schemes" class="hover:text-white transition-colors" data-translate-key="nav.schemes">Schemes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-heading font-bold mb-4" data-translate-key="footer.resources.title">Resources</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="https://cgwb.gov.in/" target="_blank" class="hover:text-white transition-colors" data-translate-key="footer.resources.cgwb">CGWB Portal</a></li>
+                        <li><a href="https://jalshakti-ddws.gov.in/" target="_blank" class="hover:text-white transition-colors" data-translate-key="footer.resources.jal_shakti">Jal Shakti Ministry</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" data-translate-key="footer.resources.guides">Technical Guides</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" data-translate-key="footer.resources.faq">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-600 mt-12 pt-8 text-center">
+                <p class="text-gray-300" data-translate-key="footer.copyright">
+                    © 2024 RWHGenius. A Government of India Initiative for Water Conservation.
+                </p>
+                <p class="text-sm text-gray-400 mt-2" data-translate-key="footer.disclaimer">This portal provides guidance for educational purposes. Consult local authorities for official approvals.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced Translation data with complete Hindi translations
+        const translations = {
+            'en': {
+                'header': {
+                    'subtitle': 'Advanced RTRWH Assessment Portal'
+                },
+                'nav': {
+                    'home': 'Home',
+                    'assessment': 'Assessment',
+                    'features': 'Features',
+                    'schemes': 'Schemes'
+                },
+                'hero': {
+                    'title': 'Harvest Your Water Future. Sustain India\'s.',
+                    'subtitle': 'Our state-of-the-art portal uses GIS-powered data to provide a precise, personalized assessment for your rooftop rainwater harvesting project. Discover your potential for water security and savings.',
+                    'cta': {
+                        'start': 'Start Assessment',
+                        'learn': 'Learn More'
+                    },
+                    'stats': {
+                        'title': 'Quick Impact Statistics',
+                        'water_savings': 'Potential Water Savings:',
+                        'roi_period': 'ROI Period:',
+                        'roi_years': '3-5 Years',
+                        'groundwater_recharge': 'Groundwater Recharge:'
+                    }
+                },
+                'benefits': {
+                    'title': 'Why Invest in Rainwater Harvesting?',
+                    'subtitle': 'Turn your property into a sustainable water asset while contributing to national conservation efforts.',
+                    'financial': {
+                        'title': 'Financial Gains',
+                        'description': 'Dramatically reduce your monthly water bills and leverage government subsidies and tax benefits for your project.'
+                    },
+                    'ecological': {
+                        'title': 'Ecological Impact',
+                        'description': 'Help mitigate urban flooding, recharge local aquifers, and significantly reduce your environmental footprint.'
+                    },
+                    'security': {
+                        'title': 'Enhanced Water Security',
+                        'description': 'Gain independence from municipal supplies and borewells by creating a reliable, year-round water source for your property.'
+                    }
+                },
+                'form': {
+                    'title': 'Your Custom Water Conservation Plan',
+                    'subtitle': 'Answer a few key questions to unlock a detailed, data-driven assessment. Our algorithm analyzes your property against local rainfall, soil, and hydrogeological data to provide a comprehensive roadmap for success.',
+                    'sections': {
+                        'personal': 'Personal Information',
+                        'property': 'Property Details',
+                        'site': 'Site Specifications',
+                        'preferences': 'Assessment Preferences'
+                    },
+                    'fields': {
+                        'fullName': {
+                            'label': 'Full Name *',
+                            'placeholder': 'Enter your full name',
+                            'error': 'This field is required.'
+                        },
+                        'phone': {
+                            'label': 'Phone Number *',
+                            'placeholder': 'Enter 10-digit mobile number',
+                            'error': 'Please enter a valid 10-digit phone number.'
+                        },
+                        'location': {
+                            'label': 'Location (City/District) *',
+                            'placeholder': 'Enter your city or district',
+                            'help': 'Used for rainfall data and local regulations.',
+                            'detect': 'Detect',
+                            'error': 'This field is required.'
+                        },
+                        'roofArea': {
+                            'label': 'Total Roof Area (sq.m) *',
+                            'help': 'Measure the total catchment area.',
+                            'error': 'Please enter a valid roof area.'
+                        },
+                        'roofType': {
+                            'label': 'Roof Type *',
+                            'placeholder': 'Select roof type',
+                            'options': {
+                                'rcc': 'RCC (Reinforced Concrete)',
+                                'metal': 'Metal Sheet',
+                                'tile': 'Clay/Concrete Tiles',
+                                'asbestos': 'Asbestos Sheet',
+                                'other': 'Other'
+                            },
+                            'error': 'This field is required.'
+                        },
+                        'buildingType': {
+                            'label': 'Building Type',
+                            'placeholder': 'Select building type',
+                            'options': {
+                                'residential': 'Residential',
+                                'commercial': 'Commercial',
+                                'institutional': 'Institutional',
+                                'industrial': 'Industrial'
+                            }
+                        },
+                        'occupants': {
+                            'label': 'Number of Occupants',
+                            'placeholder': 'e.g., 4'
+                        },
+                        'openSpace': {
+                            'label': 'Available Open Space (sq.m) *',
+                            'placeholder': 'e.g., 25.0',
+                            'help': 'For storage tanks or recharge structures.',
+                            'error': 'Please enter a valid number.'
+                        },
+                        'existingWell': {
+                            'label': 'Existing Bore/Open Well *',
+                            'placeholder': 'Select option',
+                            'options': {
+                                'none': 'No existing well',
+                                'borewell': 'Borewell',
+                                'openwell': 'Open Well',
+                                'both': 'Both'
+                            },
+                            'error': 'Please select an option.'
+                        },
+                        'soilType': {
+                            'label': 'Soil Type',
+                            'placeholder': 'Select if known',
+                            'options': {
+                                'clay': 'Clay',
+                                'sandy': 'Sandy',
+                                'loamy': 'Loamy',
+                                'rocky': 'Rocky',
+                                'unknown': 'Not Sure'
+                            }
+                        },
+                        'waterUsage': {
+                            'label': 'Daily Water Usage (Liters)',
+                            'placeholder': 'e.g., 600'
+                        },
+                        'purpose': {
+                            'label': 'Primary Purpose *',
+                            'options': {
+                                'storage': 'Water Storage & Usage',
+                                'recharge': 'Groundwater Recharge',
+                                'both': 'Both Storage & Recharge',
+                                'consultation': 'Consultation Only'
+                            },
+                            'error': 'This field is required.'
+                        },
+                        'budget': {
+                            'label': 'Estimated Budget Range (₹)',
+                            'placeholder': 'Select budget range',
+                            'options': {
+                                'under_50k': 'Under ₹50,000',
+                                '50k_1l': '₹50,000 - ₹1,00,000',
+                                '1l_2l': '₹1,00,000 - ₹2,00,000',
+                                '2l_5l': '₹2,00,000 - ₹5,00,000',
+                                'above_5l': 'Above ₹5,00,000'
+                            }
+                        }
+                    },
+                    'submit': 'Generate Comprehensive Assessment Report',
+                    'success': 'Assessment submitted successfully! You will receive your report within 24 hours.'
+                },
+                'features': {
+                    'title': 'Precision Powered by Data',
+                    'subtitle': 'We go beyond simple calculations. Our platform is built on cutting-edge technology to give you a definitive guide for your project\'s success.',
+                    'gis': {
+                        'title': 'GIS Integration',
+                        'point1': 'Hyper-local rainfall and hydrogeological data for pinpoint accuracy.',
+                        'point2': 'Soil type and permeability mapping.',
+                        'point3': 'Groundwater level data integration.',
+                        'point4': 'Principal aquifer identification.'
+                    },
+                    'technical': {
+                        'title': 'Technical Design',
+                        'point1': 'Runoff coefficient calculations.',
+                        'point2': 'Optimal storage tank sizing recommendations.',
+                        'point3': 'Recharge pit/trench dimensions.',
+                        'point4': 'Filtration system recommendations.'
+                    },
+                    'financial': {
+                        'title': 'Financial Planning',
+                        'point1': 'Detailed cost breakdown for your project.',
+                        'point2': 'ROI and payback period analysis.',
+                        'point3': 'Information on government subsidies and incentives.',
+                        'point4': 'Annual maintenance estimates.'
+                    }
+                },
+                'schemes': {
+                    'title': 'Government Schemes & Incentives',
+                    'subtitle': 'Access financial support and incentives for your RTRWH project.',
+                    'national': {
+                        'title': 'National Schemes',
+                        'jal_shakti': {
+                            'title': 'Jal Shakti Abhiyan: Catch The Rain',
+                            'description': 'National campaign promoting water conservation and rainwater harvesting across all districts.',
+                            'coverage': 'Coverage: Pan-India'
+                        },
+                        'atal_bhujal': {
+                            'title': 'Atal Bhujal Yojana',
+                            'description': 'Sustainable groundwater management with a focus on community participation in water-stressed areas.',
+                            'states': 'States: Gujarat, Haryana, Karnataka, Madhya Pradesh, Maharashtra, Rajasthan, Uttar Pradesh'
+                        }
+                    },
+                    'state': {
+                        'title': 'State-Specific Programs',
+                        'chhata': {
+                            'title': 'CHHATA (Odisha)',
+                            'description': 'Community Harnessing and Harvesting Rainwater Artificially from Terrace to Aquifer.',
+                            'subsidy': 'Subsidy: Up to 50% (₹55,000 max)'
+                        },
+                        'rajasthan': {
+                            'title': 'Mukhyamantri Jal Swavalamban Abhiyan (Rajasthan)',
+                            'description': 'A comprehensive water conservation program with RWH components across all districts.',
+                            'coverage': 'Coverage: All districts of Rajasthan'
+                        },
+                        'maharashtra': {
+                            'title': 'Jalyukta Shivar (Maharashtra)',
+                            'description': 'Village-level water conservation with individual RWH support to make villages drought-free.',
+                            'target': 'Target: Make villages drought-free'
+                        }
+                    },
+                    'incentives': {
+                        'title': 'Financial Incentives & Benefits',
+                        'avg_subsidy': 'Average Subsidy Amount',
+                        'tax_reduction': 'Property Tax Reduction',
+                        'max_subsidy': 'Maximum Subsididy Limit',
+                        'payback_years': '3-5',
+                        'payback_period': 'Years Payback Period'
+                    }
+                },
+                'footer': {
+                    'subtitle': 'A Government of India Initiative',
+                    'description': 'Empowering communities with data-driven insights for sustainable rainwater harvesting and groundwater conservation across India. We are committed to a water-resilient future.',
+                    'quick_links': {
+                        'title': 'Quick Links'
+                    },
+                    'resources': {
+                        'title': 'Resources',
+                        'cgwb': 'CGWB Portal',
+                        'jal_shakti': 'Jal Shakti Ministry',
+                        'guides': 'Technical Guides',
+                        'faq': 'FAQ'
+                    },
+                    'copyright': '© 2024 RWHGenius. A Government of India Initiative for Water Conservation.',
+                    'disclaimer': 'This portal provides guidance for educational purposes. Consult local authorities for official approvals.'
+                }
+            },
+            'hi': {
+                'header': {
+                    'subtitle': 'उन्नत RTRWH मूल्यांकन पोर्टल'
+                },
+                'nav': {
+                    'home': 'होम',
+                    'assessment': 'मूल्यांकन',
+                    'features': 'विशेषताएं',
+                    'schemes': 'योजनाएं'
+                },
+                'hero': {
+                    'title': 'अपने जल भविष्य की कटाई करें। भारत को स्थायी बनाएं।',
+                    'subtitle': 'हमारा अत्याधुनिक पोर्टल आपकी छत वर्षा जल संचयन परियोजना के लिए सटीक, व्यक्तिगत मूल्यांकन प्रदान करने के लिए GIS-संचालित डेटा का उपयोग करता है। जल सुरक्षा और बचत की अपनी क्षमता खोजें।',
+                    'cta': {
+                        'start': 'मूल्यांकन शुरू करें',
+                        'learn': 'और जानें'
+                    },
+                    'stats': {
+                        'title': 'त्वरित प्रभाव आंकड़े',
+                        'water_savings': 'संभावित जल बचत:',
+                        'roi_period': 'ROI अवधि:',
+                        'roi_years': '3-5 साल',
+                        'groundwater_recharge': 'भूजल पुनर्भरण:'
+                    }
+                },
+                'benefits': {
+                    'title': 'वर्षा जल संचयन में निवेश क्यों करें?',
+                    'subtitle': 'राष्ट्रीय संरक्षण प्रयासों में योगदान देते हुए अपनी संपत्ति को एक स्थायी जल संपत्ति में बदलें।',
+                    'financial': {
+                        'title': 'वित्तीय लाभ',
+                        'description': 'अपने मासिक पानी के बिलों को काफी कम करें और अपनी परियोजना के लिए सरकारी सब्सिडी और कर लाभों का लाभ उठाएं।'
+                    },
+                    'ecological': {
+                        'title': 'पारिस्थितिक प्रभाव',
+                        'description': 'शहरी बाढ़ को कम करने, स्थानीय जलभूषणों को पुनर्भरित करने और अपने पर्यावरणीय पदचिह्न को काफी कम करने में मदद करें।'
+                    },
+                    'security': {
+                        'title': 'बढ़ी हुई जल सुरक्षा',
+                        'description': 'अपनी संपत्ति के लिए एक विश्वसनीय, साल भर चलने वाला जल स्रोत बनाकर नगरपालिका आपूर्ति और बोरवेल से स्वतंत्रता प्राप्त करें।'
+                    }
+                },
+                'form': {
+                    'title': 'आपकी कस्टम जल संरक्षण योजना',
+                    'subtitle': 'एक विस्तृत, डेटा-संचालित मूल्यांकन को अनलॉक करने के लिए कुछ प्रमुख प्रश्नों का उत्तर दें। हमारा एल्गोरिथ्म सफलता के लिए एक व्यापक रोडमैप प्रदान करने के लिए स्थानीय वर्षा, मिट्टी और हाइड्रोजियोलॉजिकल डेटा के खिलाफ आपकी संपत्ति का विश्लेषण करता है।',
+                    'sections': {
+                        'personal': 'व्यक्तिगत जानकारी',
+                        'property': 'संपत्ति विवरण',
+                        'site': 'साइट विशिष्टताएं',
+                        'preferences': 'मूल्यांकन प्राथमिकताएं'
+                    },
+                    'fields': {
+                        'fullName': {
+                            'label': 'पूरा नाम *',
+                            'placeholder': 'अपना पूरा नाम दर्ज करें',
+                            'error': 'यह फ़ील्ड आवश्यक है।'
+                        },
+                        'phone': {
+                            'label': 'फ़ोन नंबर *',
+                            'placeholder': '10-अंकीय मोबाइल नंबर दर्ज करें',
+                            'error': 'कृपया एक वैध 10-अंकीय फ़ोन नंबर दर्ज करें।'
+                        },
+                        'location': {
+                            'label': 'स्थान (शहर/जिला) *',
+                            'placeholder': 'अपना शहर या जिला दर्ज करें',
+                            'help': 'वर्षा डेटा और स्थानीय नियमों के लिए उपयोग किया जाता है।',
+                            'detect': 'पता लगाएं',
+                            'error': 'यह फ़ील्ड आवश्यक है।'
+                        },
+                        'roofArea': {
+                            'label': 'कुल छत क्षेत्रफल (वर्ग मी.) *',
+                            'help': 'कुल कैचमेंट क्षेत्र को मापें।',
+                            'error': 'कृपया एक वैध छत क्षेत्र दर्ज करें।'
+                        },
+                        'roofType': {
+                            'label': 'छत का प्रकार *',
+                            'placeholder': 'छत का प्रकार चुनें',
+                            'options': {
+                                'rcc': 'RCC (प्रबलित कंक्रीट)',
+                                'metal': 'धातु शीट',
+                                'tile': 'मिट्टी/कंक्रीट टाइल',
+                                'asbestos': 'एस्बेस्टस शीट',
+                                'other': 'अन्य'
+                            },
+                            'error': 'यह फ़ील्ड आवश्यक है।'
+                        },
+                        'buildingType': {
+                            'label': 'भवन का प्रकार',
+                            'placeholder': 'भवन का प्रकार चुनें',
+                            'options': {
+                                'residential': 'आवासीय',
+                                'commercial': 'व्यावसायिक',
+                                'institutional': 'संस्थागत',
+                                'industrial': 'औद्योगिक'
+                            }
+                        },
+                        'occupants': {
+                            'label': 'निवासियों की संख्या',
+                            'placeholder': 'उदा., 4'
+                        },
+                        'openSpace': {
+                            'label': 'उपलब्ध खुली जगह (वर्ग मी.) *',
+                            'placeholder': 'उदा., 25.0',
+                            'help': 'भंडारण टैंक या रिचार्ज संरचनाओं के लिए।',
+                            'error': 'कृपया एक वैध संख्या दर्ज करें।'
+                        },
+                        'existingWell': {
+                            'label': 'मौजूदा बोर/खुला कुआं *',
+                            'placeholder': 'विकल्प चुनें',
+                            'options': {
+                                'none': 'कोई मौजूदा कुआं नहीं',
+                                'borewell': 'बोरवेल',
+                                'openwell': 'खुला कुआं',
+                                'both': 'दोनों'
+                            },
+                            'error': 'कृपया एक विकल्प चुनें।'
+                        },
+                        'soilType': {
+                            'label': 'मिट्टी का प्रकार',
+                            'placeholder': 'यदि पता हो तो चुनें',
+                            'options': {
+                                'clay': 'चिकनी मिट्टी',
+                                'sandy': 'रेतीली',
+                                'loamy': 'दोमट',
+                                'rocky': 'पथरीली',
+                                'unknown': 'निश्चित नहीं'
+                            }
+                        },
+                        'waterUsage': {
+                            'label': 'दैनिक पानी का उपयोग (लीटर)',
+                            'placeholder': 'उदा., 600'
+                        },
+                        'purpose': {
+                            'label': 'प्राथमिक उद्देश्य *',
+                            'options': {
+                                'storage': 'जल भंडारण और उपयोग',
+                                'recharge': 'भूजल पुनर्भरण',
+                                'both': 'भंडारण और पुनर्भरण दोनों',
+                                'consultation': 'केवल परामर्श'
+                            },
+                            'error': 'यह फ़ील्ड आवश्यक है।'
+                        },
+                        'budget': {
+                            'label': 'अनुमानित बजट सीमा (₹)',
+                            'placeholder': 'बजट सीमा चुनें',
+                            'options': {
+                                'under_50k': '₹50,000 से कम',
+                                '50k_1l': '₹50,000 - ₹1,00,000',
+                                '1l_2l': '₹1,00,000 - ₹2,00,000',
+                                '2l_5l': '₹2,00,000 - ₹5,00,000',
+                                'above_5l': '₹5,00,000 से अधिक'
+                            }
+                        }
+                    },
+                    'submit': 'व्यापक मूल्यांकन रिपोर्ट जेनरेट करें',
+                    'success': 'मूल्यांकन सफलतापूर्वक जमा किया गया! आपको 24 घंटों के भीतर अपनी रिपोर्ट प्राप्त होगी।'
+                },
+                'features': {
+                    'title': 'डेटा द्वारा संचालित सटीकता',
+                    'subtitle': 'हम सरल गणनाओं से आगे जाते हैं। हमारा प्लेटफॉर्म आपकी परियोजना की सफलता के लिए एक निश्चित गाइड देने के लिए अत्याधुनिक तकनीक पर बनाया गया है।',
+                    'gis': {
+                        'title': 'GIS एकीकरण',
+                        'point1': 'सटीक स्थान के लिए स्थानीय वर्षा और हाइड्रोजियोलॉजिकल डेटा।',
+                        'point2': 'मिट्टी का प्रकार और पारगम्यता मैपिंग।',
+                        'point3': 'भूजल स्तर डेटा एकीकरण।',
+                        'point4': 'प्रमुख जलभरण पहचान।'
+                    },
+                    'technical': {
+                        'title': 'तकनीकी डिजाइन',
+                        'point1': 'अपवाह गुणांक गणना।',
+                        'point2': 'इष्टतम भंडारण टैंक आकार की सिफारिशें।',
+                        'point3': 'रिचार्ज गड्ढे/खाई के आयाम।',
+                        'point4': 'निस्पंदन प्रणाली की सिफारिशें।'
+                    },
+                    'financial': {
+                        'title': 'वित्तीय योजना',
+                        'point1': 'आपकी परियोजना के लिए विस्तृत लागत विवरण।',
+                        'point2': 'ROI और वापसी अवधि विश्लेषण।',
+                        'point3': 'सरकारी सब्सिडी और प्रोत्साहनों की जानकारी।',
+                        'point4': 'वार्षिक रखरखाव अनुमान।'
+                    }
+                },
+                'schemes': {
+                    'title': 'सरकारी योजनाएं और प्रोत्साहन',
+                    'subtitle': 'अपनी RTRWH परियोजना के लिए वित्तीय सहायता और प्रोत्साहन प्राप्त करें।',
+                    'national': {
+                        'title': 'राष्ट्रीय योजनाएं',
+                        'jal_shakti': {
+                            'title': 'जल शक्ति अभियान: कैच द रेन',
+                            'description': 'सभी जिलों में जल संरक्षण और वर्षा जल संचयन को बढ़ावा देने वाला राष्ट्रीय अभियान।',
+                            'coverage': 'कवरेज: पूरे भारत में'
+                        },
+                        'atal_bhujal': {
+                            'title': 'अटल भूजल योजना',
+                            'description': 'जल-संकटग्रस्त क्षेत्रों में सामुदायिक भागीदारी पर ध्यान देने के साथ स्थायी भूजल प्रबंधन।',
+                            'states': 'राज्य: गुजरात, हरियाणा, कर्नाटक, मध्य प्रदेश, महाराष्ट्र, राजस्थान, उत्तर प्रदेश'
+                        }
+                    },
+                    'state': {
+                        'title': 'राज्य-विशिष्ट कार्यक्रम',
+                        'chhata': {
+                            'title': 'छाता (ओडिशा)',
+                            'description': 'छत से जलभरण तक वर्षा जल का कृत्रिम संचयन और हार्वेस्टिंग।',
+                            'subsidy': 'सब्सिडी: 50% तक (₹55,000 अधिकतम)'
+                        },
+                        'rajasthan': {
+                            'title': 'मुख्यमंत्री जल स्वावलंबन अभियान (राजस्थान)',
+                            'description': 'सभी जिलों में RWH घटकों के साथ एक व्यापक जल संरक्षण कार्यक्रम।',
+                            'coverage': 'कवरेज: राजस्थान के सभी जिले'
+                        },
+                        'maharashtra': {
+                            'title': 'जलयुक्त शिवार (महाराष्ट्र)',
+                            'description': 'गांवों को सूखा-मुक्त बनाने के लिए व्यक्तिगत RWH सहायता के साथ गांव-स्तरीय जल संरक्षण।',
+                            'target': 'लक्ष्य: गांवों को सूखा-मुक्त बनाना'
+                        }
+                    },
+                    'incentives': {
+                        'title': 'वित्तीय प्रोत्साहन और लाभ',
+                        'avg_subsidy': 'औसत सब्सिडी राशि',
+                        'tax_reduction': 'संपत्ति कर में कमी',
+                        'max_subsidy': 'अधिकतम सब्सिडी सीमा',
+                        'payback_years': '3-5',
+                        'payback_period': 'साल वापसी अवधि'
+                    }
+                },
+                'footer': {
+                    'subtitle': 'भारत सरकार की एक पहल',
+                    'description': 'भारत भर में स्थायी वर्षा जल संचयन और भूजल संरक्षण के लिए डेटा-संचालित अंतर्दृष्टि के साथ समुदायों को सशक्त बनाना। हम एक जल-प्रतिरोधी भविष्य के लिए प्रतिबद्ध हैं।',
+                    'quick_links': {
+                        'title': 'त्वरित लिंक'
+                    },
+                    'resources': {
+                        'title': 'संसाधन',
+                        'cgwb': 'CGWB पोर्टल',
+                        'jal_shakti': 'जल शक्ति मंत्रालय',
+                        'guides': 'तकनीकी गाइड',
+                        'faq': 'अक्सर पूछे जाने वाले प्रश्न'
+                    },
+                    'copyright': '© 2024 RWHGenius। जल संरक्षण के लिए भारत सरकार की एक पहल।',
+                    'disclaimer': 'यह पोर्टल शिक्षा उद्देश्यों के लिए मार्गदर्शन प्रदान करता है। आधिकारिक अनुमोदन के लिए स्थानीय अधिकारियों से सलाह लें।'
+                }
+            }
+        };
+
+        // Enhanced translation function with proper handling
+        function translatePage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+
+            // Store language preference
+            localStorage.setItem('preferredLanguage', lang);
+
+            // Set document language attribute
+            document.documentElement.lang = lang;
+
+            // Add appropriate font class for Hindi
+            if (lang === 'hi') {
+                document.body.setAttribute('lang', 'hi');
+            } else {
+                document.body.removeAttribute('lang');
+            }
+
+            // Update all elements with translation keys
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                const translation = getNestedTranslation(t, key);
+
+                if (translation) {
+                    if (element.tagName === 'INPUT') {
+                        if (element.type === 'text' || element.type === 'tel' || element.type === 'number') {
+                            element.placeholder = translation;
+                        }
+                    } else if (element.tagName === 'TEXTAREA') {
+                        element.placeholder = translation;
+                    } else if (element.tagName === 'OPTION') {
+                        element.textContent = translation;
+                    } else {
+                        element.textContent = translation;
+                    }
+                }
+            });
+        }
+
+        // Helper function to get nested translation
+        function getNestedTranslation(obj, key) {
+            const keys = key.split('.');
+            let translation = obj;
+            
+            for (const k of keys) {
+                if (translation && translation[k]) {
+                    translation = translation[k];
+                } else {
+                    return null;
+                }
+            }
+            
+            return translation;
+        }
+
+        // Initialize language system
+        document.addEventListener('DOMContentLoaded', function() {
+            const storedLang = localStorage.getItem('preferredLanguage') || 'en';
+            const langSelector = document.getElementById('language-selector');
+            const mobileLangSelector = document.getElementById('mobile-language-selector');
+            
+            if (langSelector) langSelector.value = storedLang;
+            if (mobileLangSelector) mobileLangSelector.value = storedLang;
+            translatePage(storedLang);
+
+            // Add language change event listeners
+            if (langSelector) {
+                langSelector.addEventListener('change', (e) => {
+                    translatePage(e.target.value);
+                    if (mobileLangSelector) mobileLangSelector.value = e.target.value;
+                });
+            }
+
+            if (mobileLangSelector) {
+                mobileLangSelector.addEventListener('change', (e) => {
+                    translatePage(e.target.value);
+                    if (langSelector) langSelector.value = e.target.value;
+                });
+            }
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+
+        // Enhanced form validation with translation support and API call
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('assessment-form');
+            if (form) {
+                form.addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    let isValid = true;
+
+                    // Clear previous errors
+                    form.querySelectorAll('.error-message').forEach(error => {
+                        error.style.display = 'none';
+                    });
+                    form.querySelectorAll('.border-red-500').forEach(field => {
+                        field.classList.remove('border-red-500');
+                    });
+
+                    // Validation Logic (Retain all your existing validation here)
+                    // ... (Skipping the body of validation for brevity, assume it sets isValid) ...
+                    
+                    // Validate Name
+                    const name = form.querySelector('[name="fullName"]');
+                    if (!name.value.trim()) {
+                        showError(name, 'fullName');
+                        isValid = false;
+                    }
+                    // Validate Phone (Indian format)
+                    const phone = form.querySelector('[name="phone"]');
+                    const phoneRegex = /^[6-9]\d{9}$/;
+                    if (!phoneRegex.test(phone.value.trim())) {
+                        showError(phone, 'phone');
+                        isValid = false;
+                    }
+                    // Validate Location
+                    const location = form.querySelector('[name="location"]');
+                    if (!location.value.trim()) {
+                        showError(location, 'location');
+                        isValid = false;
+                    }
+                    // Validate Roof Area
+                    const roofArea = form.querySelector('[name="roofArea"]');
+                    if (!roofArea.value || roofArea.value <= 0) {
+                        showError(roofArea, 'roofArea');
+                        isValid = false;
+                    }
+                    // Validate Roof Type
+                    const roofType = form.querySelector('[name="roofType"]');
+                    if (!roofType.value) {
+                        showError(roofType, 'roofType');
+                        isValid = false;
+                    }
+                    // Validate Open Space
+                    const openSpace = form.querySelector('[name="openSpace"]');
+                    if (!openSpace.value || openSpace.value < 0) {
+                        showError(openSpace, 'openSpace');
+                        isValid = false;
+                    }
+                    // Validate Existing Well
+                    const existingWell = form.querySelector('[name="existingWell"]');
+                    if (!existingWell.value) {
+                        showError(existingWell, 'existingWell');
+                        isValid = false;
+                    }
+                    // Validate Purpose
+                    const purpose = form.querySelector('input[name="purpose"]:checked');
+                    if (!purpose) {
+                        showError(form.querySelector('input[name="purpose"]'), 'purpose');
+                        isValid = false;
+                    }
+
+
+                    if (isValid) {
+                        const formData = {
+                            fullName: name.value,
+                            phone: phone.value,
+                            location: location.value,
+                            roofArea: parseFloat(roofArea.value),
+                            roofType: roofType.value,
+                            buildingType: form.querySelector('[name="buildingType"]').value || null,
+                            occupants: parseInt(form.querySelector('[name="occupants"]').value) || 0,
+                            openSpace: parseFloat(form.querySelector('[name="openSpace"]').value) || 0,
+                            existingWell: form.querySelector('[name="existingWell"]').value,
+                            soilType: form.querySelector('[name="soilType"]').value,
+                            waterUsage: parseInt(form.querySelector('[name="waterUsage"]').value) || 0,
+                            purpose: form.querySelector('input[name="purpose"]:checked').value
+                            // Removed groundwaterDepth field
+                        };
+
+                        try {
+                            // 1. Submit Assessment Data and get IDs
+                            // Handle both localhost and 127.0.0.1
+                            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:3000' : '';
+                            const response = await fetch(`${apiBaseUrl}/api/assessment`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(formData)
+                            });
+
+                            if (response.ok) {
+                                const result = await response.json();
+                                const assessmentId = result.assessmentId;
+                                
+                                // Show success message
+                                const successMsg = document.createElement('div');
+                                successMsg.className = 'success-message show';
+                                successMsg.innerHTML = `
+                                    <p>Assessment submitted successfully! Preparing your PDF report...</p>
+                                    <div class="mt-2">
+                                        <svg class="animate-spin h-5 w-5 text-accent mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    </div>
+                                `;
+                                form.appendChild(successMsg);
+
+                                // 2. Call the new Report Generation Endpoint
+                                const reportResponse = await fetch(`${apiBaseUrl}/api/report/${assessmentId}`);
+                                
+                                if (reportResponse.ok) {
+                                    // Update success message
+                                    successMsg.innerHTML = `
+                                        <p>Your assessment report is ready!</p>
+                                        <button onclick="this.closest('.success-message').remove(); return false;" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors">
+                                            Close
+                                        </button>
+                                    `;
+                                    form.reset();
+                                    // 3. Trigger Download
+                                    const blob = await reportResponse.blob();
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = `RWHGenius_Report_${assessmentId}.pdf`;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    window.URL.revokeObjectURL(url);
+                                    a.remove();
+                                } else {
+                                    const errorText = await reportResponse.text();
+                                    alert(`Error generating PDF: ${errorText}`);
+                                }
+
+                            } else {
+                                const errorData = await response.json();
+                                alert(`Error saving assessment: ${errorData.message}`);
+                            }
+                        } catch (error) {
+                            console.error('Failed to submit form:', error);
+                            const errorMessage = document.createElement('div');
+                            errorMessage.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4';
+                            errorMessage.innerHTML = `
+                                <strong class="font-bold">Error!</strong>
+                                <span class="block sm:inline"> Please check your network connection and try again.</span>
+                            `;
+                            form.appendChild(errorMessage);
+                            setTimeout(() => errorMessage.remove(), 5000);
+                        } finally {
+                            // Reset submit button
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        }
+                    }
+                });
+            }
+
+            function showError(element, fieldName) {
+                // ... (Your showError function remains the same) ...
+                const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+                const translation = translations[currentLang];
+                const errorMessage = translation.form.fields[fieldName]?.error || 'This field is required.';
+                
+                let errorDiv = element.parentElement.querySelector('.error-message');
+                if (!errorDiv) {
+                    errorDiv = document.getElementById(fieldName + '-error');
+                }
+                
+                if (errorDiv) {
+                    errorDiv.textContent = errorMessage;
+                    errorDiv.style.display = 'block';
+                }
+                element.classList.add('border-red-500');
+            }
+        });
+
+        // Location detection functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const detectButton = document.getElementById('detect-location');
+            const locationInput = document.getElementById('location-input');
+            
+            if (detectButton && locationInput) {
+                detectButton.addEventListener('click', function() {
+                    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+                    const detectText = translations[currentLang].form.fields.location.detect;
+                    
+                    detectButton.disabled = true;
+                    detectButton.innerHTML = '<svg class="animate-spin h-4 w-4 text-white mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>...';
+
+                    if ('geolocation' in navigator) {
+                        navigator.geolocation.getCurrentPosition(
+                            function(position) {
+                                const latitude = position.coords.latitude;
+                                const longitude = position.coords.longitude;
+                                
+                                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&accept-language=${currentLang}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let location = '';
+                                        if (data.address) {
+                                            location = data.address.city || 
+                                                     data.address.town || 
+                                                     data.address.district ||
+                                                     data.address.state_district ||
+                                                     data.address.state;
+                                        }
+                                        
+                                        if (location) {
+                                            locationInput.value = location;
+                                        } else {
+                                            throw new Error('Location not found');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error getting location:', error);
+                                        const errorMsg = currentLang === 'hi' ? 
+                                            'आपका स्थान निर्धारित नहीं किया जा सका। कृपया इसे मैन्युअल रूप से दर्ज करें।' : 
+                                            'Could not determine your location. Please enter it manually.';
+                                        alert(errorMsg);
+                                    })
+                                    .finally(() => {
+                                        detectButton.disabled = false;
+                                        detectButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${detectText}</span>`;
+                                    });
+                            },
+                            function(error) {
+                                console.error('Error getting location:', error);
+                                const errorMsg = currentLang === 'hi' ? 
+                                    'आपके स्थान तक पहुंच नहीं मिल सकी। कृपया सुनिश्चित करें कि स्थान सेवाएं सक्षम हैं और पुनः प्रयास करें।' : 
+                                    'Could not access your location. Please make sure location services are enabled and try again.';
+                                alert(errorMsg);
+                                detectButton.disabled = false;
+                                detectButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${detectText}</span>`;
+                            },
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 5000,
+                                maximumAge: 0
+                            }
+                        );
+                    } else {
+                        const errorMsg = currentLang === 'hi' ? 
+                            'आपके ब्राउज़र द्वारा स्थान का पता लगाना समर्थित नहीं है। कृपया अपना स्थान मैन्युअल रूप से दर्ज करें।' : 
+                            'Location detection is not supported by your browser. Please enter your location manually.';
+                        alert(errorMsg);
+                        detectButton.disabled = false;
+                        detectButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${detectText}</span>`;
+                    }
+                });
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add floating animation to hero stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatingElement = document.querySelector('.floating');
+            if (floatingElement) {
+                floatingElement.style.animation = 'float 6s ease-in-out infinite';
+            }
+        });
+    </script>
+</body>
+</html>

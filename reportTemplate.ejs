@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWHGenius Water Security Report</title>
+    <style>
+        body { 
+            font-family: <%= lang === 'hi' ? '"Noto Sans Devanagari"' : 'Arial' %>, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 11pt; 
+            color: #333; 
+        }
+        .page { 
+            page-break-after: always; 
+            padding: 0; 
+            margin: 0; 
+            box-sizing: border-box;
+            position: relative; 
+        }
+        .page:last-child { page-break-after: avoid; }
+        
+        /* Layout and Typography */
+        .header-section { background-color: #0F2D37; color: white; padding: 30px 40px; }
+        .header-title { font-size: 24pt; font-weight: bold; margin-bottom: 5px; }
+        .header-subtitle { font-size: 14pt; color: #7CAD3E; }
+        .section-title { font-size: 16pt; font-weight: bold; color: #1A5463; border-bottom: 2px solid #7CAD3E; padding-bottom: 5px; margin-top: 30px; margin-bottom: 15px; }
+        
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 60pt;
+            color: #0F2D37;
+            opacity: 0.1;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Summary Cards and Tables */
+        .summary-card { background-color: #F5F7F8; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .summary-item { margin-bottom: 8px; font-size: 11pt; }
+        .label { font-weight: bold; color: #0F2D37; width: 45%; display: inline-block; }
+        .value { width: 50%; display: inline-block; color: #1A5463; font-weight: 500; }
+        
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .data-table th, .data-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        .data-table th { background-color: #E8F5E9; color: #0F2D37; font-weight: bold; }
+        
+        /* Chart Container */
+        .chart-container { width: 100%; height: 350px; background-color: #f7f7f7; border: 1px solid #ddd; padding: 20px; box-sizing: border-box; }
+        .chart-title { text-align: center; font-size: 14pt; margin-bottom: 15px; color: #1A5463; }
+        .chart-placeholder {
+            width: 100%;
+            height: 280px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            text-align: center;
+            /* Flex layout to center content */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 14pt; 
+            font-weight: bold;
+            color: #1A5463;
+        }
+        
+        /* Custom Table for Tiers */
+        .tier-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 20px; }
+        .tier-table th, .tier-table td { padding: 12px 10px; text-align: center; border: 1px solid #ddd; }
+        .tier-table thead th { background-color: #1A5463; color: white; font-size: 11pt; }
+        .tier-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        .tier-label { font-weight: bold; color: #0F2D37; }
+        .tier-cost { font-weight: bold; color: #059669; font-size: 12pt; }
+
+
+        /* Utility */
+        .small-text { font-size: 10pt; color: #666; margin-top: 5px; }
+        .note { color: #7CAD3E; font-weight: bold; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+    <%
+        // Helper function to get Runoff Coefficient based on roofType
+        const getRunoffCoefficient = (roofType) => {
+            const coefficients = {
+                'rcc': 0.90,
+                'metal': 0.85,
+                'tile': 0.75,
+                'asbestos': 0.65,
+                'other': 0.60,
+            };
+            return coefficients[roofType] || 0.60;
+        };
+
+        // Helper function to format the Soil Type
+        const formatSoilType = (soilType) => {
+            if (!soilType || soilType === 'unknown') return 'Unknown (Assumed Alluvial)';
+            return soilType.charAt(0).toUpperCase() + soilType.slice(1) + ' (Infiltration potential varies)';
+        };
+
+        // Helper to format currency
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(amount);
+        };
+
+        // Ensure chart variables are always valid numbers
+        const rainfallValue = Number((report && report.hydrogeologicalProfile && report.hydrogeologicalProfile.localRainfall_mm) || 850);
+        const paybackValue = Number((report && report.estimatedPaybackPeriodYears) || 4.0);
+    %>
+    <div class="page">
+        <div class="watermark">RWHGENIUS</div>
+        <div class="header-section">
+            <div class="header-title"><%= translations.report.title %></div>
+            <div class="header-subtitle"><%= translations.report.subtitle %></div>
+        </div>
+        <div style="padding: 20px 40px;">
+            <p style="text-align: right; font-size: 10pt; margin-bottom: 20px;">Date: <%= date %></p>
+
+            <div class="section-title">1. <%= translations.report.sections.executiveSummary %></div>
+            <p style="margin-bottom: 20px;">Your property shows notable potential for enhancing local water security through efficient rainwater harvesting.</p>
+            
+            <div class="summary-card" style="background-color: #E6F0E6;">
+                <div class="summary-item"><span class="label">Technical Viability:</span><span class="value" style="color: #059669; font-size: 13pt;"><%= report.overallFeasibilityScore %></span></div>
+                <div class="summary-item"><span class="label">Annual Harvest Capacity:</span><span class="value" style="color: #1A5463; font-size: 13pt;"><%= report.annualHarvestableWaterLiters.toLocaleString(lang === 'hi' ? 'hi-IN' : 'en-IN') %> Liters</span></div>
+                <div class="summary-item"><span class="label">Optimal Structure Type:</span><span class="value"><%= report.recommendedStructure %></span></div>
+                <div class="summary-item"><span class="label">Runoff Coefficient:</span><span class="value"><%= getRunoffCoefficient(assessment.roofType) %></span></div>
+            </div>
+            
+            <div class="section-title">2. Site Analysis</div>
+            <table class="data-table">
+                <tr><th>User Name</th><td><%= user.fullName %></td></tr>
+                <tr><th>Phone Number</th><td><%= user.phoneNumber %></td></tr>
+                <tr><th>Location</th><td><%= assessment.location %></td></tr>
+                <tr><th>Rooftop Area</th><td><%= assessment.roofArea %> sq. meters</td></tr>
+                <tr><th>Roof Material</th><td><%= assessment.roofType.toUpperCase() %> (Runoff Coefficient: <%= getRunoffCoefficient(assessment.roofType) %>)</td></tr>
+                <tr><th>No. of Dwellers</th><td><%= assessment.numberOfOccupants %></td></tr>
+                <tr><th>Open Space</th><td><%= assessment.openSpace %> sq. meters</td></tr>
+                <tr><th>Primary Purpose</th><td><%= assessment.purpose %></td></tr>
+                <tr><th>Estimated Budget (Initial Range)</th><td><%= assessment.budgetRange %></td></tr>
+            </table>
+
+            <div class="section-title">3. Harvesting Potential Analysis</div>
+            <p style="font-size: 12pt;">The rooftop surface can harvest approximately **<%= report.annualHarvestableWaterLiters.toLocaleString(lang === 'hi' ? 'hi-IN' : 'en-IN') %> Liters** of rainwater annually.</p>
+            <p class="note">Estimated supply duration: <%= Math.floor((report.annualHarvestableWaterLiters / (assessment.numberOfOccupants * 135))) %> days based on standard consumption of 135L per person per day.</p>
+        </div>
+    </div>
+
+    <div class="page" style="padding: 20px 40px;">
+        <div class="section-title">4. Hydrogeological Profile & ROI Impact</div>
+        <p style="margin-bottom: 20px;">The chart below shows how annual rainfall volume (and thus harvestable volume) impacts your project's estimated financial payback period.</p>
+        
+        <div class="chart-container" style="height: 400px; padding: 10px;">
+            <div class="chart-title">Rainfall vs. Harvestable Volume Analysis</div>
+            
+            <canvas id="roiChart" style="width: 100%; height: 350px;"></canvas>
+        </div>
+        
+        <table class="data-table" style="margin-top: 20px;">
+            <tr><th>Local Rainfall</th><td><%= report.hydrogeologicalProfile.localRainfall_mm %> mm/year (Source: External Data API)</td></tr>
+            <tr><th>Soil Type</th><td><%= formatSoilType(report.hydrogeologicalProfile.soilType) %></td></tr>
+            <tr><th>Principal Aquifer</th><td><%= report.hydrogeologicalProfile.principalAquifer %> (Ideal for recharge)</td></tr>
+            <tr><th>Groundwater Depth</th><td>~<%= report.hydrogeologicalProfile.groundwaterDepth_meters %> meters</td></tr>
+        </table>
+        
+        <div class="section-title">5. Project Cost and Investment Options</div>
+        <p style="margin-bottom: 15px;">Based on your chosen budget range, here are three project tiers detailing potential cost, scope, and estimated return on investment.</p>
+        
+        <table class="tier-table">
+            <thead>
+                <tr>
+                    <th>Investment Tier</th>
+                    <th>Est. Cost</th>
+                    <th>Key Structure & Scope</th>
+                    <th>Est. Payback Period</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% costTiersArray.forEach(function(tier) { %>
+                    <tr>
+                        <td class="tier-label"><%= tier.label %></td>
+                        <td class="tier-cost"><%= formatCurrency(tier.cost) %></td>
+                        <td><%= tier.structure %></td>
+                        <td>~<%= tier.payback %> Years</td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="section-title">6. Technical Specifications</div>
+        <p style="margin-bottom: 10px;">Based on the groundwater depth of <%= report.hydrogeologicalProfile.groundwaterDepth_meters %> meters, a **<%= report.recommendedStructure %>** structure is the core functional structure recommended for your site.</p>
+        <table class="data-table">
+            <% structureData.forEach(function(item){ %>
+                <tr><th><%= item.item %></th><td><%= item.value %></td></tr>
+            <% }); %>
+        </table>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // Global function to signal Chart.js is done rendering (for Puppeteer to wait)
+        function chartRendered() {
+            // This setter is what Puppeteer waits for in page.waitForFunction
+            chartRendered.done = true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            
+            // --- DYNAMIC DATA POINTS FOR CHART ---
+            // These variables are pulled directly from the EJS context
+            const actualRainfall = <%= rainfallValue %>;
+            const actualPayback = <%= paybackValue %>;
+            
+            // Generate three scenarios based on actual data
+            const lowRainfall = Math.max(actualRainfall * 0.7, 500); 
+            const highRainfall = actualRainfall * 1.3;               
+            
+            // Calculate corresponding harvestable volume (L) for the chart
+            // NOTE: This uses simplified conversion logic (1 m^2 * 1 mm = 1 L / Runoff Coeff is ignored here for simplicity in charting volume)
+            const roofArea = <%= assessment.roofArea %>;
+            const runoffCoeff = <%= getRunoffCoefficient(assessment.roofType) %>;
+            
+            const calculateHarvestableVolume = (rainfall) => Math.round(rainfall * roofArea * runoffCoeff);
+
+            const lowHarvestable = calculateHarvestableVolume(lowRainfall);
+            const actualHarvestable = calculateHarvestableVolume(actualRainfall);
+            const highHarvestable = calculateHarvestableVolume(highRainfall);
+            
+            
+            const data = {
+                labels: ['Low Rainfall', 'Your Project', 'High Rainfall'],
+                datasets: [{
+                    label: 'Annual Rainfall (mm)',
+                    data: [lowRainfall.toFixed(0), actualRainfall, highRainfall.toFixed(0)],
+                    backgroundColor: 'rgba(26, 84, 99, 0.7)', 
+                    borderColor: 'rgba(26, 84, 99, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y-rainfall',
+                    type: 'bar' 
+                }, {
+                    label: 'Harvestable Volume (Liters)',
+                    data: [lowHarvestable, actualHarvestable, highHarvestable],
+                    backgroundColor: 'rgba(124, 173, 62, 0.8)', 
+                    borderColor: 'rgba(124, 173, 62, 1)',
+                    type: 'line', 
+                    fill: false,
+                    tension: 0.4,
+                    yAxisID: 'y-volume'
+                }]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        'y-rainfall': {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'Rainfall (mm)', color: '#333' }
+                        },
+                        'y-volume': {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Harvestable Volume (L)', color: '#333' },
+                            grid: { drawOnChartArea: false } 
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: { size: 10 }
+                            }
+                        },
+                        // CRITICAL: Call chartRendered() when the chart animation is complete
+                        animation: {
+                            onComplete: () => {
+                                if (typeof chartRendered === 'function') {
+                                    chartRendered.done = true; // Use setter logic
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(ctx, config);
+        });
+    </script>
+</body>
+</html>
