@@ -139,7 +139,16 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+    // Use your frontend URL here:
+    origin: 'https://rwhgenius-frontend.onrender.com', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
+// app.use(cors()); // Remove or comment out the old simple line
 
 
 // --- API Routes (Signup/Login remain unchanged) ---
