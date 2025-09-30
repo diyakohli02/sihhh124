@@ -125,15 +125,6 @@ async function getRainfallData(location) {
     }
 }
 // --- END DYNAMIC RAINFALL FUNCTION ---
-// Add this to your main server file (e.g., server.js)
-app.get('/', (req, res) => {
-    res.send('RWHGenius Backend API is running successfully!');
-});
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected successfully!'))
-    .catch(err => console.error('MongoDB connection error:', err));
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -150,6 +141,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // app.use(cors()); // Remove or comment out the old simple line
 
+// Add this to your main server file (e.g., server.js)
+app.get('/', (req, res) => {
+    res.send('RWHGenius Backend API is running successfully!');
+});
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected successfully!'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // --- API Routes (Signup/Login remain unchanged) ---
 
@@ -200,7 +200,7 @@ app.post('/api/assessment', async (req, res) => {
         const formData = req.body;
         
         // 1. Find or create the user
-        let user = await User.findOne({ phoneNumber: formData.phone });
+        let user = await User.findOne({ phone: formData.phone });
         if (!user) {
             user = new User({
                 fullName: formData.fullName,
