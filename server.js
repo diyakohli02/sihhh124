@@ -125,7 +125,10 @@ async function getRainfallData(location) {
     }
 }
 // --- END DYNAMIC RAINFALL FUNCTION ---
-
+// Add this to your main server file (e.g., server.js)
+app.get('/', (req, res) => {
+    res.send('RWHGenius Backend API is running successfully!');
+});
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
