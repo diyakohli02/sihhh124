@@ -1204,7 +1204,7 @@
                         try {
                             // 1. Submit Assessment Data and get IDs
                             // Handle both localhost and 127.0.0.1
-                            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:3000' : '';
+                            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:3000' : 'https://rwhgenius.onrender.com';
                             const response = await fetch(`${apiBaseUrl}/api/assessment`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
