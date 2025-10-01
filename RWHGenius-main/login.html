@@ -255,41 +255,50 @@
     </div>
     
     <script>
-        document.getElementById('register-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const messageEl = document.getElementById('register-message');
+    document.getElementById('register-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('phone').value;
+        const messageEl = document.getElementById('register-message');
+        
+        if (!/^[6-9]\d{9}$/.test(phone)) {
+            messageEl.textContent = "Please enter a valid 10-digit phone number";
+            messageEl.style.color = "#dc2626";
+            return;
+        }
+        
+        messageEl.textContent = "Creating your account...";
+        messageEl.style.color = "#0f3c50";
+        
+        try {
+            // FIX 1: Use dynamic base URL for hosting compatibility
+            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:3000' : '';
             
-            if (!/^[6-9]\d{9}$/.test(phone)) {
-                messageEl.textContent = "Please enter a valid 10-digit phone number";
+            const res = await fetch(`${apiBaseUrl}/api/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
+            });
+
+            const result = await res.json();
+            
+            // FIX 2: Check if status is OK AND if the server JSON explicitly returns success: true
+            if (res.ok && result.success) {
+                messageEl.textContent = "Success! Redirecting to Assessment...";
+                messageEl.style.color = "#568c5a";
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 800);
+            } else {
+                // Fallback for any other explicit server error (e.g., status 400)
+                messageEl.textContent = "Registration failed. Please try again.";
                 messageEl.style.color = "#dc2626";
-                return;
             }
-            
-            messageEl.textContent = "Creating your account...";
-            messageEl.style.color = "#0f3c50";
-            
-            try {
-                const res = await fetch('https://rwhgenius.onrender.com/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone })
-                });
-                if (res.ok) {
-                    messageEl.textContent = "Success! Redirecting...";
-                    messageEl.style.color = "#568c5a";
-                    setTimeout(() => {
-                        window.location.href = "index.html";
-                    }, 800);
-                } else {
-                    messageEl.textContent = "Registration failed. Please try again.";
-                    messageEl.style.color = "#dc2626";
-                }
-            } catch {
-                messageEl.textContent = "Network error. Please check your connection.";
-                messageEl.style.color = "#dc2626";
-            }
-        });
-    </script>
+        } catch(error) { // Use explicit error variable
+            console.error("Network or parsing error:", error);
+            messageEl.textContent = "Network error. Please check your connection.";
+            messageEl.style.color = "#dc2626";
+        }
+    });
+</script>
 </body>
 </html>
