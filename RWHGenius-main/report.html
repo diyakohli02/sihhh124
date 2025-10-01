@@ -19,7 +19,7 @@
         
         body { 
             font-family: 'Inter', 'Arial', sans-serif;
-            background: url('./rain-water-harvesting-image.webp') no-repeat center center fixed;
+            background: url('./rainwater-harvesting-image.webp') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
             padding: 20px;
@@ -203,8 +203,10 @@
         
         /* ========== SECTIONS ========== */
         .section {
-            margin-bottom: 45px;
+            margin-bottom: 50px;
             page-break-inside: avoid;
+            clear: both;
+            overflow: hidden;
         }
         
         .section-title {
@@ -279,10 +281,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 25px;
             margin-bottom: 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             border-radius: 8px;
             overflow: hidden;
+            page-break-inside: avoid;
+            clear: both;
         }
         
         table th, table td {
@@ -325,17 +330,20 @@
         /* ========== CHART CONTAINER ========== */
         .chart-container {
             width: 100%;
-            height: 380px;
-            margin: 30px 0;
+            height: 420px;
+            margin: 30px 0 40px 0;
             padding: 30px;
             background: linear-gradient(135deg, #f8f9fa 0%, #FFFFFF 100%);
             border-radius: 12px;
             border: 2px solid #7CAD3E;
             box-shadow: 0 4px 15px rgba(124, 173, 62, 0.1);
+            page-break-inside: avoid;
+            clear: both;
         }
         
         canvas {
             max-width: 100%;
+            max-height: 100%;
         }
         
         /* ========== NOTES & ALERTS ========== */
@@ -469,7 +477,7 @@
     
     <div class="container">
         <div class="header">
-            <img src="./rainwater-harvesting-icon-sustainability-isolated-on-white-background-from-blue-icon-set-vector.jpg" alt="RWHGenius Logo" class="header-logo">
+            <img src="./assets/logo.png" alt="RWHGenius Logo" class="header-logo">
             <h1>RWHGenius</h1>
             <p>Your Personal Hydrologist</p>
         </div>
@@ -479,7 +487,7 @@
                 📄 Download PDF Report
             </button>
             <button class="btn btn-secondary" onclick="window.print()">
-                🖨️ Print Report
+                🖨 Print Report
             </button>
             <button class="btn btn-secondary" onclick="window.location.href='index.html'">
                 ← Back to Home
@@ -510,7 +518,7 @@
             if (!assessmentId) {
                 document.getElementById('reportContent').innerHTML = `
                     <div class="error">
-                        <h3>⚠️ No Assessment ID Found</h3>
+                        <h3>⚠ No Assessment ID Found</h3>
                         <p>Please submit an assessment first from the home page.</p>
                         <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
                             Go to Home Page
@@ -528,7 +536,7 @@
                     ? 'http://localhost:3000' 
                     : 'https://rwhgenius.onrender.com';
                 
-                const response = await fetch(`${apiBaseUrl}/api/report/${assessmentId}?lang=${lang}`);
+                const response = await fetch(${apiBaseUrl}/api/report/${assessmentId}?lang=${lang});
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch report data');
@@ -540,7 +548,7 @@
                 console.error('Error fetching report:', error);
                 document.getElementById('reportContent').innerHTML = `
                     <div class="error">
-                        <h3>⚠️ Error Loading Report</h3>
+                        <h3>⚠ Error Loading Report</h3>
                         <p>${error.message}</p>
                         <p>Please check your assessment ID and try again.</p>
                         <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
@@ -727,6 +735,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
+                    aspectRatio: 2,
                     scales: {
                         'y-rainfall': {
                             type: 'linear',
@@ -789,7 +798,7 @@
                     heightLeft -= pageHeight;
                 }
 
-                pdf.save(`RWHGenius_Report_${assessmentId}.pdf`);
+                pdf.save(RWHGenius_Report_${assessmentId}.pdf);
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('Error generating PDF. Please try again or use Print option.');
