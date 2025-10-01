@@ -45,31 +45,6 @@
         .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
         .assessment-card { background: linear-gradient(145deg, rgba(124, 173, 62, 0.05), rgba(35, 100, 119, 0.05)); border: 1px solid rgba(124, 173, 62, 0.2); }
         .error-message { display: none; color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
-        .success-message { 
-            display: none; 
-            color: #059669; 
-            font-size: 1rem;
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #ecfdf5;
-            border: 1px solid #10b981;
-            border-radius: 0.5rem;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .success-message.show {
-            display: block;
-            opacity: 1;
-        }
-        
-        .success-message button {
-            margin-top: 1rem;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            transition: all 0.3s ease-in-out;
-        }
         
         [lang="hi"], [lang="hi"] * {
             font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
@@ -129,7 +104,6 @@
                     <select id="mobile-language-selector" class="w-full bg-gray-50 border border-gray-300 rounded px-3 py-2">
                         <option value="en">English</option>
                         <option value="hi">हिन्दी</option>
-                        <option value="bn">বাংলা</option>
                     </select>
                 </div>
             </div>
@@ -540,36 +514,25 @@
         // Enhanced Translation data with complete Hindi translations
         const translations = {
             'en': {
-                'header': {
-                    'subtitle': 'Advanced RTRWH Assessment Portal'
-                },
-                'nav': {
-                    'home': 'Home',
-                    'assessment': 'Assessment',
-                    'features': 'Features',
-                    'schemes': 'Schemes'
-                },
+                'header': { 'subtitle': 'Advanced RTRWH Assessment Portal' },
+                'nav': { 'home': 'Home', 'assessment': 'Assessment', 'features': 'Features', 'schemes': 'Schemes' },
                 'hero': {
                     'title': 'Harvest Your Water Future. Sustain India\'s.',
                     'subtitle': 'Our state-of-the-art portal uses GIS-powered data to provide a precise, personalized assessment for your rooftop rainwater harvesting project. Discover your potential for water security and savings.',
-                    'cta': {
-                        'start': 'Start Assessment',
-                        'learn': 'Learn More'
-                    },
+                    'cta': { 'start': 'Start Assessment', 'learn': 'Learn More' },
                     'stats': {
                         'title': 'Quick Impact Statistics',
                         'water_savings': 'Potential Water Savings:',
-                        'roi_period': 'ROI Period:',
-                        'roi_years': '3-5 Years',
-                        'groundwater_recharge': 'Groundwater Recharge:'
+                        'recharge_potential': 'Recharge Potential:',
+                        'water_security': 'Water Security:'
                     }
                 },
                 'benefits': {
-                    'title': 'Why Invest in Rainwater Harvesting?',
+                    'title': 'Why Choose Rainwater Harvesting?',
                     'subtitle': 'Turn your property into a sustainable water asset while contributing to national conservation efforts.',
-                    'financial': {
-                        'title': 'Financial Gains',
-                        'description': 'Dramatically reduce your monthly water bills and leverage government subsidies and tax benefits for your project.'
+                    'conservation': {
+                        'title': 'Water Conservation',
+                        'description': 'Maximize rainwater utilization through efficient harvesting techniques and scientific storage methods.'
                     },
                     'ecological': {
                         'title': 'Ecological Impact',
@@ -583,117 +546,39 @@
                 'form': {
                     'title': 'Your Custom Water Conservation Plan',
                     'subtitle': 'Answer a few key questions to unlock a detailed, data-driven assessment. Our algorithm analyzes your property against local rainfall, soil, and hydrogeological data to provide a comprehensive roadmap for success.',
-                    'sections': {
-                        'personal': 'Personal Information',
-                        'property': 'Property Details',
-                        'site': 'Site Specifications',
-                        'preferences': 'Assessment Preferences'
-                    },
+                    'sections': { 'personal': 'Personal Information', 'property': 'Property Details', 'site': 'Site Specifications', 'preferences': 'Assessment Preferences' },
                     'fields': {
-                        'fullName': {
-                            'label': 'Full Name *',
-                            'placeholder': 'Enter your full name',
-                            'error': 'This field is required.'
-                        },
-                        'phone': {
-                            'label': 'Phone Number *',
-                            'placeholder': 'Enter 10-digit mobile number',
-                            'error': 'Please enter a valid 10-digit phone number.'
-                        },
-                        'location': {
-                            'label': 'Location (City/District) *',
-                            'placeholder': 'Enter your city or district',
-                            'help': 'Used for rainfall data and local regulations.',
-                            'detect': 'Detect',
-                            'error': 'This field is required.'
-                        },
-                        'roofArea': {
-                            'label': 'Total Roof Area (sq.m) *',
-                            'help': 'Measure the total catchment area.',
-                            'error': 'Please enter a valid roof area.'
-                        },
+                        'fullName': { 'label': 'Full Name *', 'placeholder': 'Enter your full name', 'error': 'This field is required.' },
+                        'phone': { 'label': 'Phone Number *', 'placeholder': 'Enter 10-digit mobile number', 'error': 'Please enter a valid 10-digit phone number.' },
+                        'location': { 'label': 'Location (City/District) *', 'placeholder': 'Enter your city or district', 'help': 'Used for rainfall data and local regulations.', 'detect': 'Detect', 'error': 'This field is required.' },
+                        'roofArea': { 'label': 'Total Roof Area (sq.m) *', 'help': 'Measure the total catchment area.', 'error': 'Please enter a valid roof area.' },
                         'roofType': {
-                            'label': 'Roof Type *',
-                            'placeholder': 'Select roof type',
-                            'options': {
-                                'rcc': 'RCC (Reinforced Concrete)',
-                                'metal': 'Metal Sheet',
-                                'tile': 'Clay/Concrete Tiles',
-                                'asbestos': 'Asbestos Sheet',
-                                'other': 'Other'
-                            },
+                            'label': 'Roof Type *', 'placeholder': 'Select roof type',
+                            'options': { 'rcc': 'RCC (Reinforced Concrete)', 'metal': 'Metal Sheet', 'tile': 'Clay/Concrete Tiles', 'asbestos': 'Asbestos Sheet', 'other': 'Other' },
                             'error': 'This field is required.'
                         },
                         'buildingType': {
-                            'label': 'Building Type',
-                            'placeholder': 'Select building type',
-                            'options': {
-                                'residential': 'Residential',
-                                'commercial': 'Commercial',
-                                'institutional': 'Institutional',
-                                'industrial': 'Industrial'
-                            }
+                            'label': 'Building Type', 'placeholder': 'Select building type',
+                            'options': { 'residential': 'Residential', 'commercial': 'Commercial', 'institutional': 'Institutional', 'industrial': 'Industrial' }
                         },
-                        'occupants': {
-                            'label': 'Number of Occupants',
-                            'placeholder': 'e.g., 4'
-                        },
-                        'openSpace': {
-                            'label': 'Available Open Space (sq.m) *',
-                            'placeholder': 'e.g., 25.0',
-                            'help': 'For storage tanks or recharge structures.',
-                            'error': 'Please enter a valid number.'
-                        },
+                        'occupants': { 'label': 'Number of Occupants', 'placeholder': 'e.g., 4' },
+                        'openSpace': { 'label': 'Available Open Space (sq.m) *', 'placeholder': 'e.g., 25.0', 'help': 'For storage tanks or recharge structures.', 'error': 'Please enter a valid number.' },
                         'existingWell': {
-                            'label': 'Existing Bore/Open Well *',
-                            'placeholder': 'Select option',
-                            'options': {
-                                'none': 'No existing well',
-                                'borewell': 'Borewell',
-                                'openwell': 'Open Well',
-                                'both': 'Both'
-                            },
+                            'label': 'Existing Bore/Open Well *', 'placeholder': 'Select option',
+                            'options': { 'none': 'No existing well', 'borewell': 'Borewell', 'openwell': 'Open Well', 'both': 'Both' },
                             'error': 'Please select an option.'
                         },
                         'soilType': {
-                            'label': 'Soil Type',
-                            'placeholder': 'Select if known',
-                            'options': {
-                                'clay': 'Clay',
-                                'sandy': 'Sandy',
-                                'loamy': 'Loamy',
-                                'rocky': 'Rocky',
-                                'unknown': 'Not Sure'
-                            }
+                            'label': 'Soil Type', 'placeholder': 'Select if known',
+                            'options': { 'clay': 'Clay', 'sandy': 'Sandy', 'loamy': 'Loamy', 'rocky': 'Rocky', 'unknown': 'Not Sure' }
                         },
-                        'waterUsage': {
-                            'label': 'Daily Water Usage (Liters)',
-                            'placeholder': 'e.g., 600'
-                        },
+                        'waterUsage': { 'label': 'Daily Water Usage (Liters)', 'placeholder': 'e.g., 600' },
                         'purpose': {
                             'label': 'Primary Purpose *',
-                            'options': {
-                                'storage': 'Water Storage & Usage',
-                                'recharge': 'Groundwater Recharge',
-                                'both': 'Both Storage & Recharge',
-                                'consultation': 'Consultation Only'
-                            },
+                            'options': { 'storage': 'Water Storage & Usage', 'recharge': 'Groundwater Recharge', 'both': 'Both Storage & Recharge', 'consultation': 'Consultation Only' },
                             'error': 'This field is required.'
-                        },
-                        'budget': {
-                            'label': 'Estimated Budget Range (₹)',
-                            'placeholder': 'Select budget range',
-                            'options': {
-                                'under_50k': 'Under ₹50,000',
-                                '50k_1l': '₹50,000 - ₹1,00,000',
-                                '1l_2l': '₹1,00,000 - ₹2,00,000',
-                                '2l_5l': '₹2,00,000 - ₹5,00,000',
-                                'above_5l': 'Above ₹5,00,000'
-                            }
                         }
-                    },
-                    'submit': 'Generate Comprehensive Assessment Report',
-                    'success': 'Assessment submitted successfully! You will receive your report within 24 hours.'
+                    }
                 },
                 'features': {
                     'title': 'Precision Powered by Data',
@@ -758,7 +643,7 @@
                         'title': 'Financial Incentives & Benefits',
                         'avg_subsidy': 'Average Subsidy Amount',
                         'tax_reduction': 'Property Tax Reduction',
-                        'max_subsidy': 'Maximum Subsididy Limit',
+                        'max_subsidy': 'Maximum Subsidy Limit',
                         'payback_years': '3-5',
                         'payback_period': 'Years Payback Period'
                     }
@@ -766,9 +651,7 @@
                 'footer': {
                     'subtitle': 'A Government of India Initiative',
                     'description': 'Empowering communities with data-driven insights for sustainable rainwater harvesting and groundwater conservation across India. We are committed to a water-resilient future.',
-                    'quick_links': {
-                        'title': 'Quick Links'
-                    },
+                    'quick_links': { 'title': 'Quick Links' },
                     'resources': {
                         'title': 'Resources',
                         'cgwb': 'CGWB Portal',
@@ -781,271 +664,171 @@
                 }
             },
             'hi': {
-                'header': {
-                    'subtitle': 'उन्नत RTRWH मूल्यांकन पोर्टल'
-                },
-                'nav': {
-                    'home': 'होम',
-                    'assessment': 'मूल्यांकन',
-                    'features': 'विशेषताएं',
-                    'schemes': 'योजनाएं'
-                },
+                'header': { 'subtitle': 'उन्नत RTRWH मूल्यांकन पोर्टल' },
+                'nav': { 'home': 'होम', 'assessment': 'मूल्यांकन', 'features': 'विशेषताएं', 'schemes': 'योजनाएं' },
                 'hero': {
                     'title': 'अपने जल भविष्य की कटाई करें। भारत को स्थायी बनाएं।',
-                    'subtitle': 'हमारा अत्याधुनिक पोर्टल आपकी छत वर्षा जल संचयन परियोजना के लिए सटीक, व्यक्तिगत मूल्यांकन प्रदान करने के लिए GIS-संचालित डेटा का उपयोग करता है। जल सुरक्षा और बचत की अपनी क्षमता खोजें।',
-                    'cta': {
-                        'start': 'मूल्यांकन शुरू करें',
-                        'learn': 'और जानें'
-                    },
+                    'subtitle': 'हमारा अत्याधुनिक पोर्टल आपकी छत वर्षा जल संचयन परियोजना के लिए सटीक, व्यक्तिगत मूल्यांकन प्रदान करने के लिए GIS-संचालित डेटा का उपयोग करता है।',
+                    'cta': { 'start': 'मूल्यांकन शुरू करें', 'learn': 'और जानें' },
                     'stats': {
                         'title': 'त्वरित प्रभाव आंकड़े',
                         'water_savings': 'संभावित जल बचत:',
-                        'roi_period': 'ROI अवधि:',
-                        'roi_years': '3-5 साल',
-                        'groundwater_recharge': 'भूजल पुनर्भरण:'
+                        'recharge_potential': 'पुनर्भरण क्षमता:',
+                        'water_security': 'जल सुरक्षा:'
                     }
                 },
                 'benefits': {
-                    'title': 'वर्षा जल संचयन में निवेश क्यों करें?',
-                    'subtitle': 'राष्ट्रीय संरक्षण प्रयासों में योगदान देते हुए अपनी संपत्ति को एक स्थायी जल संपत्ति में बदलें।',
-                    'financial': {
-                        'title': 'वित्तीय लाभ',
-                        'description': 'अपने मासिक पानी के बिलों को काफी कम करें और अपनी परियोजना के लिए सरकारी सब्सिडी और कर लाभों का लाभ उठाएं।'
+                    'title': 'वर्षा जल संचयन क्यों चुनें?',
+                    'subtitle': 'राष्ट्रीय संरक्षण प्रयासों में योगदान देते हुए अपनी संपत्ति को स्थायी जल संपत्ति में बदलें।',
+                    'conservation': {
+                        'title': 'जल संरक्षण',
+                        'description': 'कुशल संचयन तकनीकों और वैज्ञानिक भंडारण विधियों के माध्यम से वर्षा जल उपयोग को अधिकतम करें।'
                     },
                     'ecological': {
                         'title': 'पारिस्थितिक प्रभाव',
-                        'description': 'शहरी बाढ़ को कम करने, स्थानीय जलभूषणों को पुनर्भरित करने और अपने पर्यावरणीय पदचिह्न को काफी कम करने में मदद करें।'
+                        'description': 'शहरी बाढ़ को कम करने, स्थानीय जलभृतों को पुनर्भरित करने में मदद करें।'
                     },
                     'security': {
                         'title': 'बढ़ी हुई जल सुरक्षा',
-                        'description': 'अपनी संपत्ति के लिए एक विश्वसनीय, साल भर चलने वाला जल स्रोत बनाकर नगरपालिका आपूर्ति और बोरवेल से स्वतंत्रता प्राप्त करें।'
+                        'description': 'एक विश्वसनीय, साल भर का जल स्रोत बनाकर नगरपालिका आपूर्ति से स्वतंत्रता प्राप्त करें।'
                     }
                 },
                 'form': {
                     'title': 'आपकी कस्टम जल संरक्षण योजना',
-                    'subtitle': 'एक विस्तृत, डेटा-संचालित मूल्यांकन को अनलॉक करने के लिए कुछ प्रमुख प्रश्नों का उत्तर दें। हमारा एल्गोरिथ्म सफलता के लिए एक व्यापक रोडमैप प्रदान करने के लिए स्थानीय वर्षा, मिट्टी और हाइड्रोजियोलॉजिकल डेटा के खिलाफ आपकी संपत्ति का विश्लेषण करता है।',
-                    'sections': {
-                        'personal': 'व्यक्तिगत जानकारी',
-                        'property': 'संपत्ति विवरण',
-                        'site': 'साइट विशिष्टताएं',
-                        'preferences': 'मूल्यांकन प्राथमिकताएं'
-                    },
+                    'subtitle': 'विस्तृत मूल्यांकन के लिए कुछ प्रमुख प्रश्नों का उत्तर दें।',
+                    'sections': { 'personal': 'व्यक्तिगत जानकारी', 'property': 'संपत्ति विवरण', 'site': 'साइट विशिष्टताएं', 'preferences': 'मूल्यांकन प्राथमिकताएं' },
                     'fields': {
-                        'fullName': {
-                            'label': 'पूरा नाम *',
-                            'placeholder': 'अपना पूरा नाम दर्ज करें',
-                            'error': 'यह फ़ील्ड आवश्यक है।'
-                        },
-                        'phone': {
-                            'label': 'फ़ोन नंबर *',
-                            'placeholder': '10-अंकीय मोबाइल नंबर दर्ज करें',
-                            'error': 'कृपया एक वैध 10-अंकीय फ़ोन नंबर दर्ज करें।'
-                        },
-                        'location': {
-                            'label': 'स्थान (शहर/जिला) *',
-                            'placeholder': 'अपना शहर या जिला दर्ज करें',
-                            'help': 'वर्षा डेटा और स्थानीय नियमों के लिए उपयोग किया जाता है।',
-                            'detect': 'पता लगाएं',
-                            'error': 'यह फ़ील्ड आवश्यक है।'
-                        },
-                        'roofArea': {
-                            'label': 'कुल छत क्षेत्रफल (वर्ग मी.) *',
-                            'help': 'कुल कैचमेंट क्षेत्र को मापें।',
-                            'error': 'कृपया एक वैध छत क्षेत्र दर्ज करें।'
-                        },
+                        'fullName': { 'label': 'पूरा नाम *', 'placeholder': 'अपना पूरा नाम दर्ज करें', 'error': 'यह फ़ील्ड आवश्यक है।' },
+                        'phone': { 'label': 'फ़ोन नंबर *', 'placeholder': '10-अंकीय मोबाइल नंबर दर्ज करें', 'error': 'कृपया वैध 10-अंकीय फ़ोन नंबर दर्ज करें।' },
+                        'location': { 'label': 'स्थान (शहर/जिला) *', 'placeholder': 'अपना शहर या जिला दर्ज करें', 'help': 'वर्षा डेटा के लिए उपयोग किया जाता है।', 'detect': 'पता लगाएं', 'error': 'यह फ़ील्ड आवश्यक है।' },
+                        'roofArea': { 'label': 'कुल छत क्षेत्रफल (वर्ग मी.) *', 'help': 'कुल कैचमेंट क्षेत्र को मापें।', 'error': 'कृपया वैध छत क्षेत्र दर्ज करें।' },
                         'roofType': {
-                            'label': 'छत का प्रकार *',
-                            'placeholder': 'छत का प्रकार चुनें',
-                            'options': {
-                                'rcc': 'RCC (प्रबलित कंक्रीट)',
-                                'metal': 'धातु शीट',
-                                'tile': 'मिट्टी/कंक्रीट टाइल',
-                                'asbestos': 'एस्बेस्टस शीट',
-                                'other': 'अन्य'
-                            },
+                            'label': 'छत का प्रकार *', 'placeholder': 'छत का प्रकार चुनें',
+                            'options': { 'rcc': 'RCC (प्रबलित कंक्रीट)', 'metal': 'धातु शीट', 'tile': 'मिट्टी/कंक्रीट टाइल', 'asbestos': 'एस्बेस्टस शीट', 'other': 'अन्य' },
                             'error': 'यह फ़ील्ड आवश्यक है।'
                         },
                         'buildingType': {
-                            'label': 'भवन का प्रकार',
-                            'placeholder': 'भवन का प्रकार चुनें',
-                            'options': {
-                                'residential': 'आवासीय',
-                                'commercial': 'व्यावसायिक',
-                                'institutional': 'संस्थागत',
-                                'industrial': 'औद्योगिक'
-                            }
+                            'label': 'भवन का प्रकार', 'placeholder': 'भवन का प्रकार चुनें',
+                            'options': { 'residential': 'आवासीय', 'commercial': 'व्यावसायिक', 'institutional': 'संस्थागत', 'industrial': 'औद्योगिक' }
                         },
-                        'occupants': {
-                            'label': 'निवासियों की संख्या',
-                            'placeholder': 'उदा., 4'
-                        },
-                        'openSpace': {
-                            'label': 'उपलब्ध खुली जगह (वर्ग मी.) *',
-                            'placeholder': 'उदा., 25.0',
-                            'help': 'भंडारण टैंक या रिचार्ज संरचनाओं के लिए।',
-                            'error': 'कृपया एक वैध संख्या दर्ज करें।'
-                        },
+                        'occupants': { 'label': 'निवासियों की संख्या', 'placeholder': 'उदा., 4' },
+                        'openSpace': { 'label': 'उपलब्ध खुली जगह (वर्ग मी.) *', 'placeholder': 'उदा., 25.0', 'help': 'भंडारण टैंक के लिए।', 'error': 'कृपया वैध संख्या दर्ज करें।' },
                         'existingWell': {
-                            'label': 'मौजूदा बोर/खुला कुआं *',
-                            'placeholder': 'विकल्प चुनें',
-                            'options': {
-                                'none': 'कोई मौजूदा कुआं नहीं',
-                                'borewell': 'बोरवेल',
-                                'openwell': 'खुला कुआं',
-                                'both': 'दोनों'
-                            },
+                            'label': 'मौजूदा बोर/खुला कुआं *', 'placeholder': 'विकल्प चुनें',
+                            'options': { 'none': 'कोई कुआं नहीं', 'borewell': 'बोरवेल', 'openwell': 'खुला कुआं', 'both': 'दोनों' },
                             'error': 'कृपया एक विकल्प चुनें।'
                         },
                         'soilType': {
-                            'label': 'मिट्टी का प्रकार',
-                            'placeholder': 'यदि पता हो तो चुनें',
-                            'options': {
-                                'clay': 'चिकनी मिट्टी',
-                                'sandy': 'रेतीली',
-                                'loamy': 'दोमट',
-                                'rocky': 'पथरीली',
-                                'unknown': 'निश्चित नहीं'
-                            }
+                            'label': 'मिट्टी का प्रकार', 'placeholder': 'यदि पता हो',
+                            'options': { 'clay': 'चिकनी', 'sandy': 'रेतीली', 'loamy': 'दोमट', 'rocky': 'पथरीली', 'unknown': 'निश्चित नहीं' }
                         },
-                        'waterUsage': {
-                            'label': 'दैनिक पानी का उपयोग (लीटर)',
-                            'placeholder': 'उदा., 600'
-                        },
+                        'waterUsage': { 'label': 'दैनिक पानी का उपयोग (लीटर)', 'placeholder': 'उदा., 600' },
                         'purpose': {
                             'label': 'प्राथमिक उद्देश्य *',
-                            'options': {
-                                'storage': 'जल भंडारण और उपयोग',
-                                'recharge': 'भूजल पुनर्भरण',
-                                'both': 'भंडारण और पुनर्भरण दोनों',
-                                'consultation': 'केवल परामर्श'
-                            },
+                            'options': { 'storage': 'जल भंडारण', 'recharge': 'भूजल पुनर्भरण', 'both': 'दोनों', 'consultation': 'केवल परामर्श' },
                             'error': 'यह फ़ील्ड आवश्यक है।'
-                        },
-                        'budget': {
-                            'label': 'अनुमानित बजट सीमा (₹)',
-                            'placeholder': 'बजट सीमा चुनें',
-                            'options': {
-                                'under_50k': '₹50,000 से कम',
-                                '50k_1l': '₹50,000 - ₹1,00,000',
-                                '1l_2l': '₹1,00,000 - ₹2,00,000',
-                                '2l_5l': '₹2,00,000 - ₹5,00,000',
-                                'above_5l': '₹5,00,000 से अधिक'
-                            }
                         }
-                    },
-                    'submit': 'व्यापक मूल्यांकन रिपोर्ट जेनरेट करें',
-                    'success': 'मूल्यांकन सफलतापूर्वक जमा किया गया! आपको 24 घंटों के भीतर अपनी रिपोर्ट प्राप्त होगी।'
+                    }
                 },
                 'features': {
                     'title': 'डेटा द्वारा संचालित सटीकता',
-                    'subtitle': 'हम सरल गणनाओं से आगे जाते हैं। हमारा प्लेटफॉर्म आपकी परियोजना की सफलता के लिए एक निश्चित गाइड देने के लिए अत्याधुनिक तकनीक पर बनाया गया है।',
+                    'subtitle': 'हम सरल गणनाओं से आगे जाते हैं।',
                     'gis': {
                         'title': 'GIS एकीकरण',
-                        'point1': 'सटीक स्थान के लिए स्थानीय वर्षा और हाइड्रोजियोलॉजिकल डेटा।',
-                        'point2': 'मिट्टी का प्रकार और पारगम्यता मैपिंग।',
-                        'point3': 'भूजल स्तर डेटा एकीकरण।',
-                        'point4': 'प्रमुख जलभरण पहचान।'
+                        'point1': 'स्थानीय वर्षा डेटा।',
+                        'point2': 'मिट्टी मैपिंग।',
+                        'point3': 'भूजल स्तर डेटा।',
+                        'point4': 'जलभरण पहचान।'
                     },
                     'technical': {
                         'title': 'तकनीकी डिजाइन',
-                        'point1': 'अपवाह गुणांक गणना।',
-                        'point2': 'इष्टतम भंडारण टैंक आकार की सिफारिशें।',
-                        'point3': 'रिचार्ज गड्ढे/खाई के आयाम।',
-                        'point4': 'निस्पंदन प्रणाली की सिफारिशें।'
+                        'point1': 'अपवाह गणना।',
+                        'point2': 'टैंक आकार सिफारिशें।',
+                        'point3': 'रिचार्ज गड्ढे आयाम।',
+                        'point4': 'निस्पंदन प्रणाली।'
                     },
                     'financial': {
                         'title': 'वित्तीय योजना',
-                        'point1': 'आपकी परियोजना के लिए विस्तृत लागत विवरण।',
-                        'point2': 'ROI और वापसी अवधि विश्लेषण।',
-                        'point3': 'सरकारी सब्सिडी और प्रोत्साहनों की जानकारी।',
-                        'point4': 'वार्षिक रखरखाव अनुमान।'
+                        'point1': 'लागत विवरण।',
+                        'point2': 'ROI विश्लेषण।',
+                        'point3': 'सब्सिडी जानकारी।',
+                        'point4': 'रखरखाव अनुमान।'
                     }
                 },
                 'schemes': {
-                    'title': 'सरकारी योजनाएं और प्रोत्साहन',
-                    'subtitle': 'अपनी RTRWH परियोजना के लिए वित्तीय सहायता और प्रोत्साहन प्राप्त करें।',
+                    'title': 'सरकारी योजनाएं',
+                    'subtitle': 'वित्तीय सहायता प्राप्त करें।',
                     'national': {
                         'title': 'राष्ट्रीय योजनाएं',
                         'jal_shakti': {
-                            'title': 'जल शक्ति अभियान: कैच द रेन',
-                            'description': 'सभी जिलों में जल संरक्षण और वर्षा जल संचयन को बढ़ावा देने वाला राष्ट्रीय अभियान।',
+                            'title': 'जल शक्ति अभियान',
+                            'description': 'जल संरक्षण को बढ़ावा देने वाला राष्ट्रीय अभियान।',
                             'coverage': 'कवरेज: पूरे भारत में'
                         },
                         'atal_bhujal': {
                             'title': 'अटल भूजल योजना',
-                            'description': 'जल-संकटग्रस्त क्षेत्रों में सामुदायिक भागीदारी पर ध्यान देने के साथ स्थायी भूजल प्रबंधन।',
-                            'states': 'राज्य: गुजरात, हरियाणा, कर्नाटक, मध्य प्रदेश, महाराष्ट्र, राजस्थान, उत्तर प्रदेश'
+                            'description': 'स्थायी भूजल प्रबंधन।',
+                            'states': 'राज्य: गुजरात, हरियाणा, कर्नाटक, एमपी, महाराष्ट्र, राजस्थान, यूपी'
                         }
                     },
                     'state': {
-                        'title': 'राज्य-विशिष्ट कार्यक्रम',
+                        'title': 'राज्य कार्यक्रम',
                         'chhata': {
                             'title': 'छाता (ओडिशा)',
-                            'description': 'छत से जलभरण तक वर्षा जल का कृत्रिम संचयन और हार्वेस्टिंग।',
-                            'subsidy': 'सब्सिडी: 50% तक (₹55,000 अधिकतम)'
+                            'description': 'छत से जलभरण तक वर्षा जल संचयन।',
+                            'subsidy': 'सब्सिडी: 50% तक'
                         },
                         'rajasthan': {
-                            'title': 'मुख्यमंत्री जल स्वावलंबन अभियान (राजस्थान)',
-                            'description': 'सभी जिलों में RWH घटकों के साथ एक व्यापक जल संरक्षण कार्यक्रम।',
+                            'title': 'मुख्यमंत्री जल स्वावलंबन अभियान',
+                            'description': 'व्यापक जल संरक्षण कार्यक्रम।',
                             'coverage': 'कवरेज: राजस्थान के सभी जिले'
                         },
                         'maharashtra': {
-                            'title': 'जलयुक्त शिवार (महाराष्ट्र)',
-                            'description': 'गांवों को सूखा-मुक्त बनाने के लिए व्यक्तिगत RWH सहायता के साथ गांव-स्तरीय जल संरक्षण।',
-                            'target': 'लक्ष्य: गांवों को सूखा-मुक्त बनाना'
+                            'title': 'जलयुक्त शिवार',
+                            'description': 'गांव-स्तरीय जल संरक्षण।',
+                            'target': 'लक्ष्य: सूखा-मुक्त गांव'
                         }
                     },
                     'incentives': {
-                        'title': 'वित्तीय प्रोत्साहन और लाभ',
-                        'avg_subsidy': 'औसत सब्सिडी राशि',
-                        'tax_reduction': 'संपत्ति कर में कमी',
-                        'max_subsidy': 'अधिकतम सब्सिडी सीमा',
+                        'title': 'वित्तीय प्रोत्साहन',
+                        'avg_subsidy': 'औसत सब्सिडी',
+                        'tax_reduction': 'कर में कमी',
+                        'max_subsidy': 'अधिकतम सब्सिडी',
                         'payback_years': '3-5',
                         'payback_period': 'साल वापसी अवधि'
                     }
                 },
                 'footer': {
-                    'subtitle': 'भारत सरकार की एक पहल',
-                    'description': 'भारत भर में स्थायी वर्षा जल संचयन और भूजल संरक्षण के लिए डेटा-संचालित अंतर्दृष्टि के साथ समुदायों को सशक्त बनाना। हम एक जल-प्रतिरोधी भविष्य के लिए प्रतिबद्ध हैं।',
-                    'quick_links': {
-                        'title': 'त्वरित लिंक'
-                    },
+                    'subtitle': 'भारत सरकार की पहल',
+                    'description': 'भारत में स्थायी वर्षा जल संचयन के लिए समुदायों को सशक्त बनाना।',
+                    'quick_links': { 'title': 'त्वरित लिंक' },
                     'resources': {
                         'title': 'संसाधन',
                         'cgwb': 'CGWB पोर्टल',
                         'jal_shakti': 'जल शक्ति मंत्रालय',
                         'guides': 'तकनीकी गाइड',
-                        'faq': 'अक्सर पूछे जाने वाले प्रश्न'
+                        'faq': 'प्रश्न'
                     },
-                    'copyright': '© 2024 RWHGenius। जल संरक्षण के लिए भारत सरकार की एक पहल।',
-                    'disclaimer': 'यह पोर्टल शिक्षा उद्देश्यों के लिए मार्गदर्शन प्रदान करता है। आधिकारिक अनुमोदन के लिए स्थानीय अधिकारियों से सलाह लें।'
+                    'copyright': '© 2024 RWHGenius। भारत सरकार की जल संरक्षण पहल।',
+                    'disclaimer': 'यह पोर्टल शिक्षा के लिए मार्गदर्शन प्रदान करता है।'
                 }
             }
         };
 
-        // Enhanced translation function with proper handling
+        // Translation function
         function translatePage(lang) {
             const t = translations[lang];
             if (!t) return;
-
-            // Store language preference
             localStorage.setItem('preferredLanguage', lang);
-
-            // Set document language attribute
             document.documentElement.lang = lang;
-
-            // Add appropriate font class for Hindi
             if (lang === 'hi') {
                 document.body.setAttribute('lang', 'hi');
             } else {
                 document.body.removeAttribute('lang');
             }
-
-            // Update all elements with translation keys
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 const translation = getNestedTranslation(t, key);
-
                 if (translation) {
                     if (element.tagName === 'INPUT') {
                         if (element.type === 'text' || element.type === 'tel' || element.type === 'number') {
@@ -1062,11 +845,9 @@
             });
         }
 
-        // Helper function to get nested translation
         function getNestedTranslation(obj, key) {
             const keys = key.split('.');
             let translation = obj;
-            
             for (const k of keys) {
                 if (translation && translation[k]) {
                     translation = translation[k];
@@ -1074,7 +855,6 @@
                     return null;
                 }
             }
-            
             return translation;
         }
 
@@ -1088,7 +868,6 @@
             if (mobileLangSelector) mobileLangSelector.value = storedLang;
             translatePage(storedLang);
 
-            // Add language change event listeners
             if (langSelector) {
                 langSelector.addEventListener('change', (e) => {
                     translatePage(e.target.value);
@@ -1106,7 +885,6 @@
             // Mobile menu toggle
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
-            
             if (mobileMenuBtn && mobileMenu) {
                 mobileMenuBtn.addEventListener('click', () => {
                     mobileMenu.classList.toggle('hidden');
@@ -1114,7 +892,7 @@
             }
         });
 
-        // Enhanced form validation with translation support and API call
+        // CRITICAL: Enhanced form validation and submission with redirect to report.html
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('assessment-form');
             if (form) {
@@ -1130,61 +908,62 @@
                         field.classList.remove('border-red-500');
                     });
 
-                    // Validation Logic (Retain all your existing validation here)
-                    // ... (Skipping the body of validation for brevity, assume it sets isValid) ...
-                    
-                    // Validate Name
+                    // Validate fields
                     const name = form.querySelector('[name="fullName"]');
                     if (!name.value.trim()) {
                         showError(name, 'fullName');
                         isValid = false;
                     }
-                    // Validate Phone (Indian format)
+
                     const phone = form.querySelector('[name="phone"]');
                     const phoneRegex = /^[6-9]\d{9}$/;
                     if (!phoneRegex.test(phone.value.trim())) {
                         showError(phone, 'phone');
                         isValid = false;
                     }
-                    // Validate Location
+
                     const location = form.querySelector('[name="location"]');
                     if (!location.value.trim()) {
                         showError(location, 'location');
                         isValid = false;
                     }
-                    // Validate Roof Area
+
                     const roofArea = form.querySelector('[name="roofArea"]');
                     if (!roofArea.value || roofArea.value <= 0) {
                         showError(roofArea, 'roofArea');
                         isValid = false;
                     }
-                    // Validate Roof Type
+
                     const roofType = form.querySelector('[name="roofType"]');
                     if (!roofType.value) {
                         showError(roofType, 'roofType');
                         isValid = false;
                     }
-                    // Validate Open Space
+
                     const openSpace = form.querySelector('[name="openSpace"]');
                     if (!openSpace.value || openSpace.value < 0) {
                         showError(openSpace, 'openSpace');
                         isValid = false;
                     }
-                    // Validate Existing Well
+
                     const existingWell = form.querySelector('[name="existingWell"]');
                     if (!existingWell.value) {
                         showError(existingWell, 'existingWell');
                         isValid = false;
                     }
-                    // Validate Purpose
+
                     const purpose = form.querySelector('input[name="purpose"]:checked');
                     if (!purpose) {
                         showError(form.querySelector('input[name="purpose"]'), 'purpose');
                         isValid = false;
                     }
 
-
                     if (isValid) {
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const originalBtnText = submitBtn.innerHTML;
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-3 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+
                         const formData = {
                             fullName: name.value,
                             phone: phone.value,
@@ -1193,18 +972,19 @@
                             roofType: roofType.value,
                             buildingType: form.querySelector('[name="buildingType"]').value || null,
                             occupants: parseInt(form.querySelector('[name="occupants"]').value) || 0,
-                            openSpace: parseFloat(form.querySelector('[name="openSpace"]').value) || 0,
-                            existingWell: form.querySelector('[name="existingWell"]').value,
+                            openSpace: parseFloat(openSpace.value) || 0,
+                            existingWell: existingWell.value,
                             soilType: form.querySelector('[name="soilType"]').value,
                             waterUsage: parseInt(form.querySelector('[name="waterUsage"]').value) || 0,
-                            purpose: form.querySelector('input[name="purpose"]:checked').value
-                            // Removed groundwaterDepth field
+                            purpose: purpose.value
                         };
 
                         try {
-                            // 1. Submit Assessment Data and get IDs
-                            // Handle both localhost and 127.0.0.1
-                            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:3000' : 'https://rwhgenius.onrender.com';
+                            const currentLang = localStorage.getItem('preferredLanguage') || 'en';
+                            const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+                                ? 'http://localhost:3000' 
+                                : 'https://rwhgenius.onrender.com';
+
                             const response = await fetch(`${apiBaseUrl}/api/assessment`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -1215,63 +995,18 @@
                                 const result = await response.json();
                                 const assessmentId = result.assessmentId;
                                 
-                                // Show success message
-                                const successMsg = document.createElement('div');
-                                successMsg.className = 'success-message show';
-                                successMsg.innerHTML = `
-                                    <p>Assessment submitted successfully! Preparing your PDF report...</p>
-                                    <div class="mt-2">
-                                        <svg class="animate-spin h-5 w-5 text-accent mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                    </div>
-                                `;
-                                form.appendChild(successMsg);
-
-                                // 2. Call the new Report Generation Endpoint
-                                const reportResponse = await fetch(`${apiBaseUrl}/api/report/${assessmentId}`);
+                                // CRITICAL: Redirect to report.html with assessment ID and language
+                                window.location.href = `report.html?id=${assessmentId}&lang=${currentLang}`;
                                 
-                                if (reportResponse.ok) {
-                                    // Update success message
-                                    successMsg.innerHTML = `
-                                        <p>Your assessment report is ready!</p>
-                                        <button onclick="this.closest('.success-message').remove(); return false;" class="mt-4 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors">
-                                            Close
-                                        </button>
-                                    `;
-                                    form.reset();
-                                    // 3. Trigger Download
-                                    const blob = await reportResponse.blob();
-                                    const url = window.URL.createObjectURL(blob);
-                                    const a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = `RWHGenius_Report_${assessmentId}.pdf`;
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    window.URL.revokeObjectURL(url);
-                                    a.remove();
-                                } else {
-                                    const errorText = await reportResponse.text();
-                                    alert(`Error generating PDF: ${errorText}`);
-                                }
-
                             } else {
                                 const errorData = await response.json();
-                                alert(`Error saving assessment: ${errorData.message}`);
+                                alert(`Error: ${errorData.message}`);
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = originalBtnText;
                             }
                         } catch (error) {
-                            console.error('Failed to submit form:', error);
-                            const errorMessage = document.createElement('div');
-                            errorMessage.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4';
-                            errorMessage.innerHTML = `
-                                <strong class="font-bold">Error!</strong>
-                                <span class="block sm:inline"> Please check your network connection and try again.</span>
-                            `;
-                            form.appendChild(errorMessage);
-                            setTimeout(() => errorMessage.remove(), 5000);
-                        } finally {
-                            // Reset submit button
+                            console.error('Submission error:', error);
+                            alert('Network error. Please check your connection and try again.');
                             submitBtn.disabled = false;
                             submitBtn.innerHTML = originalBtnText;
                         }
@@ -1280,7 +1015,6 @@
             }
 
             function showError(element, fieldName) {
-                // ... (Your showError function remains the same) ...
                 const currentLang = localStorage.getItem('preferredLanguage') || 'en';
                 const translation = translations[currentLang];
                 const errorMessage = translation.form.fields[fieldName]?.error || 'This field is required.';
@@ -1298,7 +1032,7 @@
             }
         });
 
-        // Location detection functionality
+        // Location detection
         document.addEventListener('DOMContentLoaded', function() {
             const detectButton = document.getElementById('detect-location');
             const locationInput = document.getElementById('location-input');
@@ -1350,8 +1084,8 @@
                             function(error) {
                                 console.error('Error getting location:', error);
                                 const errorMsg = currentLang === 'hi' ? 
-                                    'आपके स्थान तक पहुंच नहीं मिल सकी। कृपया सुनिश्चित करें कि स्थान सेवाएं सक्षम हैं और पुनः प्रयास करें।' : 
-                                    'Could not access your location. Please make sure location services are enabled and try again.';
+                                    'आपके स्थान तक पहुंच नहीं मिल सकी। कृपया सुनिश्चित करें कि स्थान सेवाएं सक्षम हैं।' : 
+                                    'Could not access your location. Please make sure location services are enabled.';
                                 alert(errorMsg);
                                 detectButton.disabled = false;
                                 detectButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${detectText}</span>`;
@@ -1364,8 +1098,8 @@
                         );
                     } else {
                         const errorMsg = currentLang === 'hi' ? 
-                            'आपके ब्राउज़र द्वारा स्थान का पता लगाना समर्थित नहीं है। कृपया अपना स्थान मैन्युअल रूप से दर्ज करें।' : 
-                            'Location detection is not supported by your browser. Please enter your location manually.';
+                            'आपके ब्राउज़र द्वारा स्थान का पता लगाना समर्थित नहीं है।' : 
+                            'Location detection is not supported by your browser.';
                         alert(errorMsg);
                         detectButton.disabled = false;
                         detectButton.innerHTML = `<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>${detectText}</span>`;
