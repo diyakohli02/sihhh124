@@ -136,17 +136,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors({
-  origin: ["https://rwhgenius-frontend.onrender.com", "http://localhost:3000"], // allow prod + local
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-// // Handle preflight
-// app.options('*', cors());
-
-
+app.use(cors());
 
 
 // --- API Routes (Signup/Login remain unchanged) ---
@@ -218,6 +208,7 @@ app.post('/api/assessment', async (req, res) => {
              await user.save();
         }
 
+        console.log("Reached core hydrological")
         // --- CORE HYDROLOGICAL CALCULATION ---
         const annualRainfallMM = await getRainfallData(formData.location);
         const runoffCoefficient = RUNOFF_COEFFICIENTS[formData.roofType] || RUNOFF_COEFFICIENTS.other;
@@ -337,9 +328,162 @@ app.get('/api/users', async (req, res) => {
 });
 
 // NEW ROUTE: PDF Report Generation (Unchanged, relies on assessment being successful)
+// app.get('/api/report/:assessmentId', async (req, res) => {
+//     const lang = req.query.lang || 'en';
+//     let browser;
+//     try {
+//         const { assessmentId } = req.params;
+
+//         // 1. Fetch data from MongoDB
+//         const assessment = await Assessment.findById(assessmentId).populate('userId').lean();
+//         const report = await Report.findOne({ assessmentId }).lean();
+
+//         if (!assessment || !report) {
+//             return res.status(404).send('Assessment or Report not found.');
+//         }
+        
+//         // --- DYNAMIC STRUCTURE DETAILS LOGIC ---
+//         let diameter, depth, constructionDetail;
+//         const structure = report.recommendedStructure;
+        
+//         switch (structure) {
+//             case "Recharge Shaft":
+//                 diameter = "1.5 - 2.0 meters";
+//                 depth = "18 - 30 meters";
+//                 constructionDetail = "Vertical shaft accessing deep aquifer. Requires expert drilling and graded filter media.";
+//                 break;
+//             case "Storage Tank (Cistern)":
+//                 const volumeLiters = (assessment.dailyWaterUsage || 300) * 60; 
+//                 const volumeCubicMeters = (volumeLiters / 1000).toFixed(1);
+//                 diameter = `Capacity: ${volumeCubicMeters} m³ (Approx ${volumeLiters.toLocaleString('en-IN')} Liters)`;
+//                 depth = "Varies (Above or Underground)";
+//                 constructionDetail = "Sealed, opaque plastic or reinforced concrete tank for collection and direct use.";
+//                 break;
+//             case "Recharge Pit/Trench":
+//                 diameter = "1.0 - 1.5 meters wide";
+//                 depth = "1.5 - 3.0 meters deep";
+//                 constructionDetail = "Simple pit/trench filled with layers of boulders, gravel, and sand for shallow percolation.";
+//                 break;
+//             default:
+//                 diameter = "Varies by dimension";
+//                 depth = "Varies by type";
+//                 constructionDetail = "Requires custom design based on final site visit.";
+//         }
+//         // --- END DYNAMIC STRUCTURE DETAILS LOGIC ---
+
+
+//         // 2. Compile all data for the template
+//         const reportData = {
+//             date: new Date().toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN'),
+//             assessment: assessment,
+//             user: assessment.userId, 
+//             report: report,
+//             translations: TRANSLATIONS[lang] || TRANSLATIONS.en,
+//             lang: lang,
+//             costTiersArray: [
+//                 { label: report.costTiers.basic.label, cost: report.costTiers.basic.cost, structure: report.costTiers.basic.structure, payback: (report.costTiers.basic.cost / BASE_ANNUAL_SAVINGS).toFixed(1) },
+//                 { label: report.costTiers.standard.label, cost: report.costTiers.standard.cost, structure: report.costTiers.standard.structure, payback: report.estimatedPaybackPeriodYears },
+//                 { label: report.costTiers.premium.label, cost: report.costTiers.premium.cost, structure: report.costTiers.premium.structure, payback: (report.costTiers.premium.cost / BASE_ANNUAL_SAVINGS).toFixed(1) },
+//             ],
+//             structureData: [
+//                 { item: "Type", value: structure },
+//                 { item: "Diameter/Capacity", value: diameter },
+//                 { item: "Depth", value: depth },
+//                 { item: "Construction", value: constructionDetail },
+//             ],
+//             // Variables needed for the EJS Chart script
+//             rainfallValue: report.hydrogeologicalProfile.localRainfall_mm,
+//             paybackValue: report.estimatedPaybackPeriodYears,
+//             roofArea: assessment.roofArea,
+//             roofType: assessment.roofType,
+//             getRunoffCoefficient: (type) => RUNOFF_COEFFICIENTS[type] || 0.60 
+//         };
+
+//         // 3. Render EJS template to HTML string
+//         const templatePath = path.join(__dirname, 'reportTemplate.ejs');
+//         const htmlContent = await ejs.renderFile(templatePath, reportData);
+
+//         // 4. Generate PDF using Puppeteer
+//         browser = await puppeteer.launch({
+//             executablePath: puppeteer.executablePath(),
+//             args: [
+//                 '--no-sandbox',
+//                 '--disable-setuid-sandbox',
+//                 '--disable-dev-shm-usage',
+//                 '--disable-gpu',
+//                 '--disable-web-security'
+//             ],
+//             headless: true,
+//             timeout: 60000 
+//         });
+        
+//         const page = await browser.newPage();
+        
+//         // Set longer timeouts for page operations
+//         page.setDefaultNavigationTimeout(60000);
+//         page.setDefaultTimeout(60000);
+        
+//         await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 1 });
+        
+//         // --- CRITICAL FIX: Inject Content and Wait for Chart ---
+//         await page.setContent(htmlContent, { 
+//             waitUntil: 'domcontentloaded', 
+//             timeout: 60000
+//         });
+        
+//         try {
+//             // Wait for chart to be defined first
+//             await page.waitForFunction('typeof Chart !== "undefined"', {
+//                 polling: 100,
+//                 timeout: 60000
+//             });
+            
+//             // Then wait for our specific chart to render
+//             await page.waitForFunction('typeof chartRendered === "function" && chartRendered.done', {
+//                 polling: 100,
+//                 timeout: 60000 // Increased timeout to 60 seconds
+//             });
+            
+//             // Small final pause for clean rendering (e.g., fonts/CSS redraw)
+//             await page.waitForTimeout(2000);
+//         } catch (chartError) {
+//             console.error('Chart rendering error:', chartError);
+//             // If chart fails to render, we'll still try to generate the PDF
+//             console.log('Proceeding with PDF generation despite chart rendering issue');
+//         }
+        
+//         // Generate PDF
+//         const pdfBuffer = await page.pdf({
+//             format: 'A4',
+//             printBackground: true,
+//             margin: { top: '40px', right: '40px', bottom: '40px', left: '40px' },
+//             preferCSSPageSize: true,
+//             timeout: 60000
+//         });
+        
+//         // 5. Stream PDF back to the client for download
+//         res.setHeader('Content-Disposition', `attachment; filename="RWHGenius_Report_${assessmentId}.pdf"`);
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.send(pdfBuffer);
+
+//     } catch (error) {
+//         console.error('PDF Generation ERROR TRAP:', error);
+//         res.status(500).json({ message: 'Error generating report. Check server logs for details.' });
+//     } finally {
+//         // Ensure browser is always closed
+//         if (browser) {
+//             try {
+//                 await browser.close();
+//             } catch (closeError) {
+//                 console.error('Error closing browser:', closeError);
+//             }
+//         }
+//     }
+// });
+
+// REPLACE the /api/report/:assessmentId route with this:
 app.get('/api/report/:assessmentId', async (req, res) => {
     const lang = req.query.lang || 'en';
-    let browser;
     try {
         const { assessmentId } = req.params;
 
@@ -348,10 +492,10 @@ app.get('/api/report/:assessmentId', async (req, res) => {
         const report = await Report.findOne({ assessmentId }).lean();
 
         if (!assessment || !report) {
-            return res.status(404).send('Assessment or Report not found.');
+            return res.status(404).json({ message: 'Assessment or Report not found.' });
         }
         
-        // --- DYNAMIC STRUCTURE DETAILS LOGIC ---
+        // 2. Calculate dynamic structure details
         let diameter, depth, constructionDetail;
         const structure = report.recommendedStructure;
         
@@ -378,10 +522,8 @@ app.get('/api/report/:assessmentId', async (req, res) => {
                 depth = "Varies by type";
                 constructionDetail = "Requires custom design based on final site visit.";
         }
-        // --- END DYNAMIC STRUCTURE DETAILS LOGIC ---
 
-
-        // 2. Compile all data for the template
+        // 3. Prepare complete report data
         const reportData = {
             date: new Date().toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN'),
             assessment: assessment,
@@ -390,9 +532,24 @@ app.get('/api/report/:assessmentId', async (req, res) => {
             translations: TRANSLATIONS[lang] || TRANSLATIONS.en,
             lang: lang,
             costTiersArray: [
-                { label: report.costTiers.basic.label, cost: report.costTiers.basic.cost, structure: report.costTiers.basic.structure, payback: (report.costTiers.basic.cost / BASE_ANNUAL_SAVINGS).toFixed(1) },
-                { label: report.costTiers.standard.label, cost: report.costTiers.standard.cost, structure: report.costTiers.standard.structure, payback: report.estimatedPaybackPeriodYears },
-                { label: report.costTiers.premium.label, cost: report.costTiers.premium.cost, structure: report.costTiers.premium.structure, payback: (report.costTiers.premium.cost / BASE_ANNUAL_SAVINGS).toFixed(1) },
+                { 
+                    label: report.costTiers.basic.label, 
+                    cost: report.costTiers.basic.cost, 
+                    structure: report.costTiers.basic.structure, 
+                    payback: (report.costTiers.basic.cost / BASE_ANNUAL_SAVINGS).toFixed(1) 
+                },
+                { 
+                    label: report.costTiers.standard.label, 
+                    cost: report.costTiers.standard.cost, 
+                    structure: report.costTiers.standard.structure, 
+                    payback: report.estimatedPaybackPeriodYears 
+                },
+                { 
+                    label: report.costTiers.premium.label, 
+                    cost: report.costTiers.premium.cost, 
+                    structure: report.costTiers.premium.structure, 
+                    payback: (report.costTiers.premium.cost / BASE_ANNUAL_SAVINGS).toFixed(1) 
+                },
             ],
             structureData: [
                 { item: "Type", value: structure },
@@ -400,93 +557,15 @@ app.get('/api/report/:assessmentId', async (req, res) => {
                 { item: "Depth", value: depth },
                 { item: "Construction", value: constructionDetail },
             ],
-            // Variables needed for the EJS Chart script
-            rainfallValue: report.hydrogeologicalProfile.localRainfall_mm,
-            paybackValue: report.estimatedPaybackPeriodYears,
-            roofArea: assessment.roofArea,
-            roofType: assessment.roofType,
-            getRunoffCoefficient: (type) => RUNOFF_COEFFICIENTS[type] || 0.60 
+            runoffCoefficients: RUNOFF_COEFFICIENTS
         };
 
-        // 3. Render EJS template to HTML string
-        const templatePath = path.join(__dirname, 'reportTemplate.ejs');
-        const htmlContent = await ejs.renderFile(templatePath, reportData);
-
-        // 4. Generate PDF using Puppeteer
-        browser = await puppeteer.launch({
-            executablePath: puppeteer.executablePath(),
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-gpu',
-                '--disable-web-security'
-            ],
-            headless: true,
-            timeout: 60000 
-        });
-        
-        const page = await browser.newPage();
-        
-        // Set longer timeouts for page operations
-        page.setDefaultNavigationTimeout(60000);
-        page.setDefaultTimeout(60000);
-        
-        await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 1 });
-        
-        // --- CRITICAL FIX: Inject Content and Wait for Chart ---
-        await page.setContent(htmlContent, { 
-            waitUntil: 'domcontentloaded', 
-            timeout: 60000
-        });
-        
-        try {
-            // Wait for chart to be defined first
-            await page.waitForFunction('typeof Chart !== "undefined"', {
-                polling: 100,
-                timeout: 60000
-            });
-            
-            // Then wait for our specific chart to render
-            await page.waitForFunction('typeof chartRendered === "function" && chartRendered.done', {
-                polling: 100,
-                timeout: 60000 // Increased timeout to 60 seconds
-            });
-            
-            // Small final pause for clean rendering (e.g., fonts/CSS redraw)
-            await page.waitForTimeout(2000);
-        } catch (chartError) {
-            console.error('Chart rendering error:', chartError);
-            // If chart fails to render, we'll still try to generate the PDF
-            console.log('Proceeding with PDF generation despite chart rendering issue');
-        }
-        
-        // Generate PDF
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: { top: '40px', right: '40px', bottom: '40px', left: '40px' },
-            preferCSSPageSize: true,
-            timeout: 60000
-        });
-        
-        // 5. Stream PDF back to the client for download
-        res.setHeader('Content-Disposition', `attachment; filename="RWHGenius_Report_${assessmentId}.pdf"`);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.send(pdfBuffer);
+        // 4. Send JSON data to frontend
+        res.status(200).json(reportData);
 
     } catch (error) {
-        console.error('PDF Generation ERROR TRAP:', error);
-        res.status(500).json({ message: 'Error generating report. Check server logs for details.' });
-    } finally {
-        // Ensure browser is always closed
-        if (browser) {
-            try {
-                await browser.close();
-            } catch (closeError) {
-                console.error('Error closing browser:', closeError);
-            }
-        }
+        console.error('Report data fetch error:', error);
+        res.status(500).json({ message: 'Error fetching report data.' });
     }
 });
 
