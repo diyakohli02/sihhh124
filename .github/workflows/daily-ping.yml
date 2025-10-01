@@ -1,0 +1,17 @@
+name: Render keep-alive ping
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Runs every 10 minutes
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  curl-websites:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Frontend
+        run: curl -I https://rwhgenius-frontend.onrender.com
+
+      - name: Ping Backend
+        run: curl -I https://rwhgenius.onrender.com
