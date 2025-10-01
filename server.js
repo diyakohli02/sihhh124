@@ -137,10 +137,15 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({
-  origin: "https://rwhgenius-frontend.onrender.com",
+  origin: ["https://rwhgenius-frontend.onrender.com", "http://localhost:3000"], // allow prod + local
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
+
+// Handle preflight
+app.options('*', cors());
+
 
 
 
