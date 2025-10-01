@@ -200,7 +200,7 @@ app.post('/api/assessment', async (req, res) => {
         const formData = req.body;
         
         // 1. Find or create the user
-        let user = await User.findOne({ phone: formData.phone });
+        let user = await User.findOne({ phoneNumber: formData.phone });
         if (!user) {
             user = new User({
                 fullName: formData.fullName,
