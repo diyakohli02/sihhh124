@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWHGenius Report Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #0F2D37 0%, #1A5463 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; font-family: 'Poppins', sans-serif; }
+        .header p { color: #7CAD3E; font-size: 18px; }
+        
+        .actions {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: #7CAD3E;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #6a9835;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 173, 62, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .loader {
+            display: none;
+            margin-left: 15px;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #7CAD3E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #reportContent {
+            padding: 40px;
+            font-size: 14px;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1A5463;
+            border-bottom: 3px solid #7CAD3E;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #E6F0E6 0%, #f0f9f0 100%);
+            border-left: 5px solid #7CAD3E;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .label {
+            font-weight: 600;
+            color: #0F2D37;
+        }
+        .value {
+            font-weight: 500;
+            color: #1A5463;
+        }
+        .highlight {
+            color: #059669;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #1A5463;
+            color: white;
+            font-weight: 600;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 8px;
+        }
+        canvas {
+            max-width: 100%;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+        .loading h2 {
+            margin-bottom: 20px;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #7CAD3E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @media print {
+            .actions { display: none; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+        
+        [lang="hi"], [lang="hi"] * {
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 JAL SANRAKSHAN</h1>
+            <p>Your Personalized Water Security Report</p>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="generatePDF()">
+                📄 Download PDF Report
+            </button>
+            <button class="btn btn-secondary" onclick="window.print()">
+                🖨️ Print Report
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                ← Back to Home
+            </button>
+            <div class="loader" id="loader"></div>
+        </div>
+        
+        <div id="reportContent">
+            <div class="loading">
+                <h2>Loading your report...</h2>
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 10px;">Please wait while we fetch your data.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get assessment ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const assessmentId = urlParams.get('id');
+        const lang = urlParams.get('lang') || 'en';
+        
+        let reportData = null;
+        let myChart = null;
+
+        // Fetch report data on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (!assessmentId) {
+                document.getElementById('reportContent').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ No Assessment ID Found</h3>
+                        <p>Please submit an assessment first from the home page.</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
+                            Go to Home Page
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            await fetchReportData();
+        });
+
+        async function fetchReportData() {
+            try {
+                const apiBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+                    ? 'http://localhost:3000' 
+                    : 'https://rwhgenius.onrender.com';
+                
+                const response = await fetch(`${apiBaseUrl}/api/report/${assessmentId}?lang=${lang}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch report data');
+                }
+                
+                reportData = await response.json();
+                renderReport(reportData);
+            } catch (error) {
+                console.error('Error fetching report:', error);
+                document.getElementById('reportContent').innerHTML = `
+                    <div class="error">
+                        <h3>⚠️ Error Loading Report</h3>
+                        <p>${error.message}</p>
+                        <p>Please check your assessment ID and try again.</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
+                            Go to Home Page
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderReport(data) {
+            const content = document.getElementById('reportContent');
+            
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-IN', { 
+                    style: 'currency', 
+                    currency: 'INR', 
+                    minimumFractionDigits: 0 
+                }).format(amount);
+            };
+
+            const formatSoilType = (soilType) => {
+                if (!soilType || soilType === 'unknown') return 'Unknown (Assumed Alluvial)';
+                return soilType.charAt(0).toUpperCase() + soilType.slice(1);
+            };
+
+            content.innerHTML = `
+                <div style="text-align: right; color: #666; margin-bottom: 20px;">
+                    Date: ${data.date}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">1. Executive Summary</div>
+                    <p style="margin-bottom: 20px;">Your property shows notable potential for enhancing local water security through efficient rainwater harvesting.</p>
+                    
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <span class="label">Technical Viability:</span>
+                            <span class="value highlight">${data.report.overallFeasibilityScore}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Annual Harvest Capacity:</span>
+                            <span class="value highlight">${data.report.annualHarvestableWaterLiters.toLocaleString('en-IN')} Liters</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Optimal Structure Type:</span>
+                            <span class="value">${data.report.recommendedStructure}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Runoff Coefficient:</span>
+                            <span class="value">${data.runoffCoefficients[data.assessment.roofType]}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">2. Site Analysis</div>
+                    <table>
+                        <tr><th>User Name</th><td>${data.user.fullName || 'User (' + data.user.phoneNumber + ')'}</td></tr>
+                        <tr><th>Phone Number</th><td>${data.user.phoneNumber}</td></tr>
+                        <tr><th>Location</th><td>${data.assessment.location}</td></tr>
+                        <tr><th>Rooftop Area</th><td>${data.assessment.roofArea} sq. meters</td></tr>
+                        <tr><th>Roof Material</th><td>${data.assessment.roofType.toUpperCase()} (Coefficient: ${data.runoffCoefficients[data.assessment.roofType]})</td></tr>
+                        <tr><th>No. of Dwellers</th><td>${data.assessment.numberOfOccupants}</td></tr>
+                        <tr><th>Open Space</th><td>${data.assessment.openSpace} sq. meters</td></tr>
+                        <tr><th>Primary Purpose</th><td>${data.assessment.purpose}</td></tr>
+                        <tr><th>Budget Range</th><td>${data.assessment.budgetRange || 'Not specified'}</td></tr>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">3. Harvesting Potential Analysis</div>
+                    <p style="font-size: 16px; margin-bottom: 15px;">
+                        Your rooftop can harvest approximately <strong style="color: #059669;">${data.report.annualHarvestableWaterLiters.toLocaleString('en-IN')} Liters</strong> of rainwater annually.
+                    </p>
+                    <div class="note">
+                        <strong>💧 Supply Duration:</strong> Approximately ${Math.floor((data.report.annualHarvestableWaterLiters / (data.assessment.numberOfOccupants * 135)))} days based on standard consumption of 135L per person per day.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">4. Hydrogeological Profile & Analysis</div>
+                    <div class="chart-container">
+                        <canvas id="roiChart"></canvas>
+                    </div>
+                    
+                    <table>
+                        <tr><th>Local Rainfall</th><td>${data.report.hydrogeologicalProfile.localRainfall_mm} mm/year</td></tr>
+                        <tr><th>Soil Type</th><td>${formatSoilType(data.report.hydrogeologicalProfile.soilType)}</td></tr>
+                        <tr><th>Principal Aquifer</th><td>${data.report.hydrogeologicalProfile.principalAquifer}</td></tr>
+                        <tr><th>Groundwater Depth</th><td>~${data.report.hydrogeologicalProfile.groundwaterDepth_meters} meters</td></tr>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">5. Project Cost and Investment Options</div>
+                    <p style="margin-bottom: 15px;">Based on your budget range, here are three project tiers:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Investment Tier</th>
+                                <th>Est. Cost</th>
+                                <th>Structure & Scope</th>
+                                <th>Payback Period</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.costTiersArray.map(tier => `
+                                <tr>
+                                    <td><strong>${tier.label}</strong></td>
+                                    <td style="color: #059669; font-weight: bold;">${formatCurrency(tier.cost)}</td>
+                                    <td>${tier.structure}</td>
+                                    <td>~${tier.payback} Years</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">6. Technical Specifications</div>
+                    <p style="margin-bottom: 15px;">
+                        Based on your groundwater depth of ${data.report.hydrogeologicalProfile.groundwaterDepth_meters} meters, 
+                        a <strong>${data.report.recommendedStructure}</strong> is recommended.
+                    </p>
+                    
+                    <table>
+                        ${data.structureData.map(item => `
+                            <tr><th>${item.item}</th><td>${item.value}</td></tr>
+                        `).join('')}
+                    </table>
+                </div>
+            `;
+
+            // Render the chart after content is loaded
+            setTimeout(() => renderChart(data), 100);
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('roiChart');
+            if (!ctx) return;
+
+            const actualRainfall = data.report.hydrogeologicalProfile.localRainfall_mm;
+            const roofArea = data.assessment.roofArea;
+            const runoffCoeff = data.runoffCoefficients[data.assessment.roofType] || 0.6;
+
+            const calculateVolume = (rainfall) => Math.round(rainfall * roofArea * runoffCoeff);
+
+            const lowRainfall = Math.max(actualRainfall * 0.7, 500);
+            const highRainfall = actualRainfall * 1.3;
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Low Rainfall', 'Your Project', 'High Rainfall'],
+                    datasets: [{
+                        label: 'Annual Rainfall (mm)',
+                        data: [lowRainfall.toFixed(0), actualRainfall, highRainfall.toFixed(0)],
+                        backgroundColor: 'rgba(26, 84, 99, 0.7)',
+                        borderColor: 'rgba(26, 84, 99, 1)',
+                        borderWidth: 2,
+                        yAxisID: 'y-rainfall'
+                    }, {
+                        label: 'Harvestable Volume (Liters)',
+                        data: [
+                            calculateVolume(lowRainfall),
+                            calculateVolume(actualRainfall),
+                            calculateVolume(highRainfall)
+                        ],
+                        backgroundColor: 'rgba(124, 173, 62, 0.8)',
+                        borderColor: 'rgba(124, 173, 62, 1)',
+                        type: 'line',
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y-volume',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        'y-rainfall': {
+                            type: 'linear',
+                            position: 'left',
+                            title: { display: true, text: 'Rainfall (mm)', color: '#333', font: { size: 14 } }
+                        },
+                        'y-volume': {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Harvestable Volume (L)', color: '#333', font: { size: 14 } },
+                            grid: { drawOnChartArea: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function generatePDF() {
+            const loader = document.getElementById('loader');
+            const buttons = document.querySelectorAll('.btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            loader.style.display = 'block';
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const content = document.getElementById('reportContent');
+                
+                // Use html2canvas to capture the content
+                const canvas = await html2canvas(content, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // Add additional pages if content is longer than one page
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save(`RWHGenius_Report_${assessmentId}.pdf`);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again or use Print option.');
+            } finally {
+                loader.style.display = 'none';
+                buttons.forEach(btn => btn.disabled = false);
+            }
+        }
+    </script>
+</body>
+</html>
