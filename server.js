@@ -204,7 +204,7 @@ app.post('/api/assessment', async (req, res) => {
         if (!user) {
             user = new User({
                 fullName: formData.fullName,
-                phone: formData.phone,
+                phoneNumber: formData.phone,
                 password: 'placeholder_password'
             });
             await user.save();
@@ -496,7 +496,7 @@ app.post('/api/register', async (req, res) => {
         // Save phone to MongoDB
         let user = await User.findOne({ phone });
         if (!user) {
-            user = new User({ phone });
+            user = new User({ phoneNumber: phone });
             await user.save();
         }
         res.json({ success: true });
