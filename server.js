@@ -14,7 +14,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 
 // Import your Mongoose models
-const User = require('./models/User');
+const User = require('./models/user');
 const Assessment = require('./models/assessment');
 const Report = require('./models/report');
 
