@@ -14,7 +14,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 
 // Import your Mongoose models
-const User = require('./models/user');
+const User = require('./models/User');
 const Assessment = require('./models/assessment');
 const Report = require('./models/report');
 
@@ -126,34 +126,22 @@ async function getRainfallData(location) {
 }
 // --- END DYNAMIC RAINFALL FUNCTION ---
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-const corsOptions = {
-    // Use your frontend URL here:
-    origin: 'https://rwhgenius-frontend.onrender.com', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 204 // For legacy browser support
-};
-
-app.use(cors(corsOptions));
-// app.use(cors()); // Remove or comment out the old simple line
-
-// Add this to your main server file (e.g., server.js)
-app.get('/', (req, res) => {
-    res.send('RWHGenius Backend API is running successfully!');
-});
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected successfully!'))
     .catch(err => console.error('MongoDB connection error:', err));
 
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(cors());
+
+
 // --- API Routes (Signup/Login remain unchanged) ---
 
-// Route for User Sign Up (Existing) - Unchanged
+// Route for User Sign Up (Existing)
 app.post('/api/signup', async (req, res) => {
     try {
         const { name, phone, password } = req.body;
@@ -175,7 +163,7 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-// Route for User Login (Existing) - Unchanged
+// Route for User Login (Existing)
 app.post('/api/login', async (req, res) => {
     try {
         const { phone, password } = req.body;
@@ -199,15 +187,25 @@ app.post('/api/assessment', async (req, res) => {
     try {
         const formData = req.body;
         
-        // 1. Find or create the user
+        // CRITICAL CHECK: Ensure phone is present and is a string before proceeding
+        if (!formData.phone || typeof formData.phone !== 'string') {
+             return res.status(400).json({ message: 'Invalid or missing phone number in form data.' });
+        }
+        
+        // 1. Find or create the user (uses phoneNumber to match schema/other routes)
         let user = await User.findOne({ phoneNumber: formData.phone });
         if (!user) {
+            // New user creation: Now works because `fullName` is optional in the schema.
             user = new User({
-                fullName: formData.fullName,
-                phoneNumber: formData.phone,
+                fullName: formData.fullName || 'New User', 
+                phoneNumber: formData.phone, // Ensure correct schema field name is used
                 password: 'placeholder_password'
             });
             await user.save();
+        } else if (formData.fullName && user.fullName !== formData.fullName) {
+             // CRITICAL FIX: If user exists but name is missing/different, update it now
+             user.fullName = formData.fullName;
+             await user.save();
         }
 
         // --- CORE HYDROLOGICAL CALCULATION ---
@@ -328,7 +326,7 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-// NEW ROUTE: PDF Report Generation (FINAL FIX FOR TIMEOUT)
+// NEW ROUTE: PDF Report Generation (Unchanged, relies on assessment being successful)
 app.get('/api/report/:assessmentId', async (req, res) => {
     const lang = req.query.lang || 'en';
     let browser;
@@ -493,14 +491,21 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ error: 'Invalid phone number' });
     }
     try {
-        // Save phone to MongoDB
-        let user = await User.findOne({ phone });
+        // FIX 1: Change lookup to use `phoneNumber` field
+        let user = await User.findOne({ phoneNumber: phone });
         if (!user) {
-            user = new User({ phoneNumber: phone });
+            // FIX 2: Change creation to use `phoneNumber` and add `fullName`
+            user = new User({ phoneNumber: phone, fullName: 'Assessment User' });
             await user.save();
         }
-        res.json({ success: true });
+        // FIX 3: Always return 200/success for quick registration to proceed to assessment
+        res.status(200).json({ success: true, message: 'Registration successful or user already exists.' });
     } catch (err) {
+        // FIX 4: Handle the E11000 duplicate key error and still return success
+        console.error('Database error on register:', err);
+        if (err.code === 11000) {
+             return res.status(200).json({ success: true, message: 'User already exists, proceeding to assessment.' });
+        }
         res.status(500).json({ error: 'Database error' });
     }
 });
