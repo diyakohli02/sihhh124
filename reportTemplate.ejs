@@ -134,7 +134,7 @@
             
             <div class="section-title">2. Site Analysis</div>
             <table class="data-table">
-                <tr><th>User Name</th><td><%= user.fullName %></td></tr>
+                <tr><th>User Name</th><td><%= user.fullName || 'User (' + user.phoneNumber + ')' %></td></tr>
                 <tr><th>Phone Number</th><td><%= user.phoneNumber %></td></tr>
                 <tr><th>Location</th><td><%= assessment.location %></td></tr>
                 <tr><th>Rooftop Area</th><td><%= assessment.roofArea %> sq. meters</td></tr>
