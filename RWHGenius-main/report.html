@@ -10,477 +10,214 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ========== RESET & BASE STYLES ========== */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: 'Inter', 'Arial', sans-serif;
-            background: url('./rainwater-harvesting-image.webp') no-repeat center center fixed;
-            background-size: cover;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #2c3e50;
-            line-height: 1.6;
-            position: relative;
         }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 45, 55, 0.3);
-            z-index: -1;
-        }
-        
-        /* ========== CONTAINER & LAYOUT ========== */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: #FFFFFF;
-            border-radius: 16px;
-            box-shadow: 0 25px 70px rgba(15, 45, 55, 0.4);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
-            position: relative;
         }
-        
-        /* ========== PDF WATERMARK (Visible in PDF only) ========== */
-        .pdf-watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 80pt;
-            font-weight: 700;
-            color: #0F2D37;
-            opacity: 0.08;
-            z-index: 0;
-            white-space: nowrap;
-            pointer-events: none;
-            font-family: 'Poppins', sans-serif;
-            letter-spacing: 8px;
-        }
-        
-        /* ========== HEADER SECTION ========== */
         .header {
             background: linear-gradient(135deg, #0F2D37 0%, #1A5463 100%);
-            color: #FFFFFF;
-            padding: 50px 40px;
+            color: white;
+            padding: 40px;
             text-align: center;
-            position: relative;
-            border-bottom: 6px solid #7CAD3E;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
         }
+        .header h1 { font-size: 32px; margin-bottom: 10px; font-family: 'Poppins', sans-serif; }
+        .header p { color: #7CAD3E; font-size: 18px; }
         
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #7CAD3E 0%, #6a9835 50%, #7CAD3E 100%);
-        }
-        
-        .header-logo {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-        
-        .header h1 { 
-            font-size: 38px; 
-            margin-bottom: 8px; 
-            font-family: 'Poppins', sans-serif; 
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .header p { 
-            color: #7CAD3E; 
-            font-size: 18px; 
-            font-weight: 600;
-            letter-spacing: 1px;
-            font-style: italic;
-        }
-        
-        /* ========== ACTION BUTTONS ========== */
         .actions {
-            padding: 25px 40px;
+            padding: 20px 40px;
             background: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid #e9ecef;
             display: flex;
-            gap: 12px;
+            gap: 15px;
             align-items: center;
             flex-wrap: wrap;
         }
-        
         .btn {
-            padding: 10px 20px;
-            border: 2px solid;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.3px;
-            background: white;
         }
-        
         .btn-primary {
-            border-color: #7CAD3E;
-            color: #7CAD3E;
-            background: white;
-        }
-        
-        .btn-primary:hover {
             background: #7CAD3E;
             color: white;
         }
-        
-        .btn-secondary {
-            border-color: #6c757d;
-            color: #495057;
-            background: white;
+        .btn-primary:hover {
+            background: #6a9835;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 173, 62, 0.4);
         }
-        
-        .btn-secondary:hover {
+        .btn-secondary {
             background: #6c757d;
             color: white;
         }
-        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
         .btn:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
         }
-        
-        .btn:disabled:hover {
-            background: white;
-            color: inherit;
-        }
-        
         .loader {
             display: none;
             margin-left: 15px;
-            width: 26px;
-            height: 26px;
-            border: 4px solid #e9ecef;
-            border-top: 4px solid #7CAD3E;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #7CAD3E;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s linear infinite;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         
-        /* ========== REPORT CONTENT ========== */
         #reportContent {
-            padding: 50px 40px;
-            font-size: 15px;
-            color: #2c3e50;
-            position: relative;
-            z-index: 1;
-            background: #FFFFFF;
+            padding: 40px;
+            font-size: 14px;
+            color: #333;
         }
-        
-        /* ========== SECTIONS ========== */
         .section {
-            margin-bottom: 50px;
-            page-break-inside: avoid;
-            clear: both;
-            overflow: hidden;
+            margin-bottom: 30px;
         }
-        
         .section-title {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 22px;
+            font-weight: bold;
             color: #1A5463;
-            border-bottom: 4px solid #7CAD3E;
-            padding-bottom: 12px;
-            margin-bottom: 25px;
+            border-bottom: 3px solid #7CAD3E;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
             font-family: 'Poppins', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
         }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: #0F2D37;
-        }
-        
-        /* ========== SUMMARY CARD ========== */
         .summary-card {
             background: linear-gradient(135deg, #E6F0E6 0%, #f0f9f0 100%);
-            border-left: 6px solid #7CAD3E;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(124, 173, 62, 0.15);
+            border-left: 5px solid #7CAD3E;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
-        
         .summary-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            font-size: 16px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(26, 84, 99, 0.1);
-        }
-        
-        .summary-item:last-child {
-            border-bottom: none;
-        }
-        
-        .label {
-            font-weight: 700;
-            color: #0F2D37;
+            margin-bottom: 12px;
             font-size: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        
-        .value {
+        .label {
             font-weight: 600;
+            color: #0F2D37;
+        }
+        .value {
+            font-weight: 500;
             color: #1A5463;
-            font-size: 16px;
         }
-        
         .highlight {
-            color: #7CAD3E;
-            font-size: 20px;
-            font-weight: 800;
-            text-shadow: 1px 1px 2px rgba(124, 173, 62, 0.2);
+            color: #059669;
+            font-size: 18px;
+            font-weight: bold;
         }
         
-        /* ========== TABLES ========== */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border-radius: 8px;
-            overflow: hidden;
-            page-break-inside: avoid;
-            clear: both;
+            margin-bottom: 20px;
         }
-        
         table th, table td {
-            border: 1px solid #e0e0e0;
-            padding: 16px 20px;
+            border: 1px solid #ddd;
+            padding: 12px;
             text-align: left;
         }
-        
         table th {
-            background: linear-gradient(135deg, #0F2D37 0%, #1A5463 100%);
-            color: #FFFFFF;
-            font-weight: 700;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            background-color: #1A5463;
+            color: white;
+            font-weight: 600;
         }
-        
         table tr:nth-child(even) {
-            background-color: #f5fff5;
+            background-color: #f9f9f9;
         }
         
-        table tr:nth-child(odd) {
-            background-color: #FFFFFF;
-        }
-        
-        table tr:hover {
-            background-color: #e6f0e6;
-        }
-        
-        table td {
-            color: #2c3e50;
-            font-size: 15px;
-        }
-        
-        table td strong {
-            color: #0F2D37;
-            font-weight: 700;
-        }
-        
-        /* ========== CHART CONTAINER ========== */
         .chart-container {
             width: 100%;
-            height: 420px;
-            margin: 30px 0 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #FFFFFF 100%);
-            border-radius: 12px;
-            border: 2px solid #7CAD3E;
-            box-shadow: 0 4px 15px rgba(124, 173, 62, 0.1);
-            page-break-inside: avoid;
+            height: 450px;
+            margin: 20px 0 40px 0;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 8px;
             clear: both;
         }
-        
         canvas {
             max-width: 100%;
-            max-height: 100%;
+            height: 100% !important;
         }
         
-        /* ========== NOTES & ALERTS ========== */
         .note {
-            background: linear-gradient(135deg, #fff3cd 0%, #fffaeb 100%);
-            border-left: 5px solid #ffc107;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
-            font-size: 15px;
-        }
-        
-        .note strong {
-            color: #0F2D37;
-            font-weight: 700;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
         }
         
         .error {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            background: #f8d7da;
             color: #721c24;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 8px;
             margin: 20px;
-            border-left: 5px solid #dc3545;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+            border-left: 4px solid #dc3545;
         }
         
-        .error h3 {
-            margin-bottom: 10px;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        /* ========== LOADING STATE ========== */
         .loading {
             text-align: center;
-            padding: 80px 20px;
-            color: #1A5463;
+            padding: 60px;
+            color: #666;
         }
-        
         .loading h2 {
-            margin-bottom: 25px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 28px;
-            color: #0F2D37;
+            margin-bottom: 20px;
         }
-        
         .loading-spinner {
             display: inline-block;
-            width: 60px;
-            height: 60px;
-            border: 6px solid #e9ecef;
-            border-top: 6px solid #7CAD3E;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #7CAD3E;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         
-        .loading p {
-            margin-top: 15px;
-            font-size: 16px;
-            color: #1A5463;
-        }
-        
-        /* ========== PRINT & PDF STYLES ========== */
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
-            
-            .actions {
-                display: none;
-            }
-            
-            .pdf-watermark {
-                display: block !important;
-            }
-            
-            .section {
-                page-break-inside: avoid;
-            }
+            .actions { display: none; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
         }
         
-        /* ========== LANGUAGE SUPPORT ========== */
         [lang="hi"], [lang="hi"] * {
             font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
-        }
-        
-        /* ========== RESPONSIVE DESIGN ========== */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 28px;
-            }
-            
-            .header p {
-                font-size: 16px;
-            }
-            
-            #reportContent {
-                padding: 30px 20px;
-            }
-            
-            .section-title {
-                font-size: 20px;
-            }
-            
-            .summary-card {
-                padding: 20px;
-            }
-            
-            table th, table td {
-                padding: 12px 10px;
-                font-size: 13px;
-            }
-            
-            .chart-container {
-                height: 300px;
-                padding: 20px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- PDF Watermark (visible only in PDF output) -->
-    <div class="pdf-watermark">RWHGENIUS - OFFICIAL ASSESSMENT</div>
-    
     <div class="container">
         <div class="header">
-            <img src="./rainwater-harvesting-icon-sustainability-isolated-on-white-background-from-blue-icon-set-vector.jpg
-" alt="RWHGenius Logo" class="header-logo">
             <h1>RWHGenius</h1>
-            <p>Your Personal Hydrologist</p>
+            <p>Your Personalized Water Security Report</p>
         </div>
         
         <div class="actions">
@@ -488,7 +225,7 @@
                 📄 Download PDF Report
             </button>
             <button class="btn btn-secondary" onclick="window.print()">
-                🖨 Print Report
+                🖨️ Print Report
             </button>
             <button class="btn btn-secondary" onclick="window.location.href='index.html'">
                 ← Back to Home
@@ -519,7 +256,7 @@
             if (!assessmentId) {
                 document.getElementById('reportContent').innerHTML = `
                     <div class="error">
-                        <h3>⚠ No Assessment ID Found</h3>
+                        <h3>⚠️ No Assessment ID Found</h3>
                         <p>Please submit an assessment first from the home page.</p>
                         <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
                             Go to Home Page
@@ -537,7 +274,7 @@
                     ? 'http://localhost:3000' 
                     : 'https://rwhgenius.onrender.com';
                 
-                const response = await fetch(${apiBaseUrl}/api/report/${assessmentId}?lang=${lang});
+                const response = await fetch(`${apiBaseUrl}/api/report/${assessmentId}?lang=${lang}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch report data');
@@ -549,7 +286,7 @@
                 console.error('Error fetching report:', error);
                 document.getElementById('reportContent').innerHTML = `
                     <div class="error">
-                        <h3>⚠ Error Loading Report</h3>
+                        <h3>⚠️ Error Loading Report</h3>
                         <p>${error.message}</p>
                         <p>Please check your assessment ID and try again.</p>
                         <button class="btn btn-primary" style="margin-top: 15px;" onclick="window.location.href='index.html'">
@@ -632,9 +369,6 @@
 
                 <div class="section">
                     <div class="section-title">4. Hydrogeological Profile & Analysis</div>
-                    <div class="chart-container">
-                        <canvas id="roiChart"></canvas>
-                    </div>
                     
                     <table>
                         <tr><th>Local Rainfall</th><td>${data.report.hydrogeologicalProfile.localRainfall_mm} mm/year</td></tr>
@@ -642,6 +376,10 @@
                         <tr><th>Principal Aquifer</th><td>${data.report.hydrogeologicalProfile.principalAquifer}</td></tr>
                         <tr><th>Groundwater Depth</th><td>~${data.report.hydrogeologicalProfile.groundwaterDepth_meters} meters</td></tr>
                     </table>
+                    
+                    <div class="chart-container">
+                        <canvas id="roiChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="section">
@@ -736,7 +474,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2,
                     scales: {
                         'y-rainfall': {
                             type: 'linear',
@@ -799,7 +536,7 @@
                     heightLeft -= pageHeight;
                 }
 
-                pdf.save(RWHGenius_Report_${assessmentId}.pdf);
+                pdf.save(`RWHGenius_Report_${assessmentId}.pdf`);
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 alert('Error generating PDF. Please try again or use Print option.');
